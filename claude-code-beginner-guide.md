@@ -455,6 +455,74 @@ claude
 
 > 🍎 **Mac 用户特别注意**：在 Mac Terminal 里，`Ctrl + C` 是**中断进程**（不是复制！）——这也是为什么 2.4 小节说用 `Ctrl + C` 两次退出 Claude。复制粘贴请用 `Cmd + C` / `Cmd + V`。
 
+### 2.10 💰 省钱必看：用 DeepSeek API，便宜到哭！
+
+Claude Code 默认使用 Anthropic 官方的 API，需要付费（美元结算，对学生来说不便宜）。但好消息是——**Claude Code 支持切换模型供应商**，你可以用国产的 **DeepSeek API**，效果依然很好，价格却便宜几十倍！
+
+#### 为什么推荐 DeepSeek API？
+
+| | Anthropic 官方 | DeepSeek API |
+|---|---|---|
+| 💵 费用 | 美元结算，较贵 | 人民币结算，**非常便宜** |
+| 🎓 对学生 | 门槛较高 | **充值 10 元能用很久** |
+| 🚀 体验 | 很好 | **远超网页端免费对话**，且支持大上下文 |
+| 🇨🇳 国产 | — | 支持国产，响应快 |
+
+> 💰 简单说：花一杯奶茶的钱（~10 元），就能用上好几个月的高质量 AI 编程助手。
+
+#### 方法一：用 cc-switch 一键切换（推荐，最简单）
+
+[cc-switch](https://github.com/farion1231/cc-switch) 是一个专为 Claude Code 设计的模型切换工具，图形化界面，几下点击就完成配置。
+
+```bash
+# 第 1 步：安装 cc-switch
+# 访问 https://github.com/farion1231/cc-switch 或 https://www.ccswitch.io/zh/
+# 按照说明下载安装
+
+# 第 2 步：打开 cc-switch，选择「DeepSeek」作为模型供应商
+
+# 第 3 步：填入你的 DeepSeek API Key
+#      （在 https://platform.deepseek.com 注册并获取）
+
+# 第 4 步：点击「应用配置」→ 搞定！
+```
+
+配置完成后重新启动 Claude Code，它就会走 DeepSeek 的 API 了。费用直接从你的 DeepSeek 账户余额扣，10 块钱能用非常久。
+
+#### 方法二：手动修改配置文件
+
+如果你喜欢自己动手，也可以直接编辑 Claude Code 的配置文件：
+
+```bash
+# 配置文件位置：
+~/.claude/settings.json
+```
+
+打开这个文件，添加或修改以下内容（以 DeepSeek 为例）：
+
+```json
+{
+  "model": "deepseek-chat",
+  "apiKey": "你的DeepSeek-API-Key",
+  "baseURL": "https://api.deepseek.com"
+}
+```
+
+> ⚠️ **注意**：具体的配置字段名可能随 Claude Code 版本变化。如果你不确定怎么填，直接用方法一的 cc-switch 最省事。
+
+#### 注册 DeepSeek 并获取 API Key
+
+```
+第 1 步：打开 https://platform.deepseek.com
+第 2 步：注册账号（手机号即可）
+第 3 步：在控制台找到「API Keys」→ 创建一个新的 Key
+第 4 步：复制 Key，填入 cc-switch 或 settings.json
+第 5 步：充值 10 元（微信/支付宝都可以）
+第 6 步：开始用！🎉
+```
+
+> 💡 **如果你搞不定配置**，直接把上面这段话复制给 Claude Code，它就能帮你一步步配好——前提是你用的是默认的 Claude Code（还没切换之前）。配好之后切换到 DeepSeek，后续就省钱了。
+
 ---
 
 ## 三、让 AI 读你的文件
@@ -901,6 +969,7 @@ Claude 就会跳过 Plan Mode，直接开干。
 | 继续对话 | `/resume` 恢复历史对话 |
 | ESC 后悔药 | 按一次中断，按多次回退到之前的对话 |
 | 快捷键 | `Alt+Enter` 换行、`Alt+V` 贴图、`Cmd+C/V` 复制粘贴、`Ctrl+U` 清空行 |
+| 省钱用 DeepSeek | 注册 platform.deepseek.com → 充 10 元 → cc-switch 切换 |
 | 让 AI 读文件 | 空格 + `@` + 选择文件 |
 | 找工具 | "请搜索/安装相关 skills 或 GitHub 仓库" |
 | 装 GitHub 仓库 | 给 Claude 仓库地址，它会自己 clone 和配置 |

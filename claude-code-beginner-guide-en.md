@@ -455,6 +455,74 @@ This way, you never have to fear "saying the wrong thing" — you can always und
 
 > 🍎 **Important for Mac users**: In Mac Terminal, `Ctrl + C` is **interrupt signal** (NOT copy!) — that's exactly why Section 2.4 says to use `Ctrl + C` twice to exit Claude. For copy/paste, use `Cmd + C` / `Cmd + V`.
 
+### 2.10 💰 Save Money: Use DeepSeek API — Dirt Cheap!
+
+By default, Claude Code uses Anthropic's official API, which charges in USD — not exactly student-budget-friendly. But here's the good news: **Claude Code supports switching model providers**. You can use **DeepSeek's API** (a Chinese AI lab), which delivers great results at a fraction of the cost.
+
+#### Why DeepSeek API?
+
+| | Anthropic Official | DeepSeek API |
+|---|---|---|
+| 💵 Cost | USD, relatively expensive | RMB, **extremely cheap** |
+| 🎓 For students | High barrier | **~$1.50 (10 RMB) lasts for months** |
+| 🚀 Experience | Excellent | **Far better than free web chat**, large context window |
+| 🌏 Region | Global | Optimized for Asia-Pacific, fast response |
+
+> 💰 In short: for the price of a bubble tea (~$1.50), you get months of high-quality AI coding assistance.
+
+#### Method 1: Use cc-switch for One-Click Setup (Recommended)
+
+[cc-switch](https://github.com/farion1231/cc-switch) is a tool purpose-built for switching Claude Code's model backend. Also available at [ccswitch.io](https://www.ccswitch.io/zh/).
+
+```bash
+# Step 1: Install cc-switch
+# Visit https://github.com/farion1231/cc-switch or https://www.ccswitch.io/zh/
+# Follow the instructions to download and install
+
+# Step 2: Open cc-switch and select "DeepSeek" as the model provider
+
+# Step 3: Enter your DeepSeek API Key
+#      (Register at https://platform.deepseek.com to get one)
+
+# Step 4: Click "Apply Config" → Done!
+```
+
+Restart Claude Code after configuration, and it will route through DeepSeek's API. Fees are deducted from your DeepSeek account balance.
+
+#### Method 2: Manually Edit the Config File
+
+If you prefer DIY, edit Claude Code's settings file directly:
+
+```bash
+# Config file location:
+~/.claude/settings.json
+```
+
+Open this file and add or modify the following (DeepSeek example):
+
+```json
+{
+  "model": "deepseek-chat",
+  "apiKey": "your-deepseek-api-key",
+  "baseURL": "https://api.deepseek.com"
+}
+```
+
+> ⚠️ **Note**: The exact field names may vary with Claude Code versions. If you're unsure, just use Method 1 (cc-switch) — it's foolproof.
+
+#### Register on DeepSeek and Get Your API Key
+
+```
+Step 1: Open https://platform.deepseek.com
+Step 2: Register an account (phone number works)
+Step 3: Go to "API Keys" in the console → create a new Key
+Step 4: Copy the Key into cc-switch or settings.json
+Step 5: Top up ~$1.50 (10 RMB) via WeChat Pay / Alipay
+Step 6: Start using it! 🎉
+```
+
+> 💡 **If you get stuck configuring**, just copy the instructions above into Claude Code and it'll walk you through step by step. Do this before switching — once switched to DeepSeek, you'll be saving money on every request.
+
 ---
 
 ## 3. Letting AI Read Your Files
@@ -901,6 +969,7 @@ Similarly, if you want to **enter** Plan Mode:
 | Resume conversation | `/resume` to pick up past conversations |
 | ESC "undo button" | Press once to interrupt, multiple times to rewind |
 | Keyboard shortcuts | `Alt+Enter` for newline, `Alt+V` to paste images, `Cmd+C/V` copy/paste, `Ctrl+U` clear line |
+| Save money with DeepSeek | Register at platform.deepseek.com → top up ~$1.50 → cc-switch |
 | Let AI read files | Space + `@` + select files |
 | Find tools | "Please search/install relevant skills or GitHub repos" |
 | Install GitHub repos | Give Claude the repo URL — it clones and configures on its own |

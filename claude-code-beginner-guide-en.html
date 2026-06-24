@@ -482,6 +482,54 @@ claude
   <div class="callout tip"><strong>💡 Tip</strong>: <code>Ctrl + U</code> is a total lifesaver — when you've typed a long command and realize it's all wrong, don't wear out your Backspace key; just <code>Ctrl + U</code> and it's gone in one second!</div>
   <div class="callout warn"><strong>🍎 Important for Mac users</strong>: In Mac Terminal, <code>Ctrl + C</code> is <strong>interrupt signal</strong> (NOT copy!) — that's exactly why Section 2.4 says to use <code>Ctrl + C</code> twice to exit Claude. For copy/paste, use <code>Cmd + C</code> / <code>Cmd + V</code>.</div>
 
+  <h3>2.10 💰 Save Money: Use DeepSeek API — Dirt Cheap!</h3>
+  <p>By default, Claude Code uses Anthropic's official API, which charges in USD — not exactly student-budget-friendly. But here's the good news: <strong>Claude Code supports switching model providers</strong>. You can use <strong>DeepSeek's API</strong>, which delivers great results at a fraction of the cost.</p>
+
+  <h4>Why DeepSeek API?</h4>
+  <table>
+    <tr><th></th><th>Anthropic Official</th><th>DeepSeek API</th></tr>
+    <tr><td>💵 Cost</td><td>USD, relatively expensive</td><td>RMB, <strong>extremely cheap</strong></td></tr>
+    <tr><td>🎓 For students</td><td>High barrier</td><td><strong>~$1.50 (10 RMB) lasts for months</strong></td></tr>
+    <tr><td>🚀 Experience</td><td>Excellent</td><td><strong>Far better than free web chat</strong>, large context window</td></tr>
+    <tr><td>🌏 Region</td><td>Global</td><td>Optimized for Asia-Pacific, fast response</td></tr>
+  </table>
+  <blockquote><p>💰 In short: for the price of a bubble tea (~$1.50), you get months of high-quality AI coding assistance.</p></blockquote>
+
+  <h4>Method 1: Use cc-switch for One-Click Setup (Recommended)</h4>
+  <p><a href="https://github.com/farion1231/cc-switch" target="_blank" rel="noopener">cc-switch</a> is a tool purpose-built for switching Claude Code's model backend. Also at <a href="https://www.ccswitch.io/zh/" target="_blank" rel="noopener">ccswitch.io</a>.</p>
+  <pre><code># Step 1: Install cc-switch
+# Visit https://github.com/farion1231/cc-switch or https://www.ccswitch.io/zh/
+# Follow the instructions to download and install
+
+# Step 2: Open cc-switch and select "DeepSeek" as the model provider
+
+# Step 3: Enter your DeepSeek API Key
+#      (Register at https://platform.deepseek.com to get one)
+
+# Step 4: Click "Apply Config" → Done!</code></pre>
+  <p>Restart Claude Code after configuration, and it will route through DeepSeek's API.</p>
+
+  <h4>Method 2: Manually Edit the Config File</h4>
+  <pre><code># Config file location:
+~/.claude/settings.json</code></pre>
+  <p>Open this file and add or modify:</p>
+  <pre><code>{
+  "model": "deepseek-chat",
+  "apiKey": "your-deepseek-api-key",
+  "baseURL": "https://api.deepseek.com"
+}</code></pre>
+  <div class="callout warn"><strong>⚠️ Note</strong>: The exact field names may vary with Claude Code versions. If unsure, just use Method 1 (cc-switch).</div>
+
+  <h4>Register on DeepSeek and Get Your API Key</h4>
+  <pre><code>Step 1: Open https://platform.deepseek.com
+Step 2: Register an account (phone number works)
+Step 3: Go to "API Keys" in the console → create a new Key
+Step 4: Copy the Key into cc-switch or settings.json
+Step 5: Top up ~$1.50 (10 RMB) via WeChat Pay / Alipay
+Step 6: Start using it! 🎉</code></pre>
+
+  <div class="callout tip"><strong>💡 If you get stuck configuring</strong>, just copy the instructions above into Claude Code and it'll walk you through step by step. Do this before switching — once switched to DeepSeek, you'll be saving money on every request.</div>
+
   <!-- ==================== Section 3 ==================== -->
   <h2 id="section3">3. Letting AI Read Your Files</h2>
   <p>Claude is very smart, but it doesn't "automatically see" the files on your computer. You need to <strong>manually tell it</strong> which ones to read.</p>
@@ -750,6 +798,7 @@ Step 4: Open the generated image file to view</code></pre>
     <tr><td>Resume conversation</td><td><code>/resume</code> to pick up past conversations</td></tr>
     <tr><td>ESC "undo button"</td><td>Press once to interrupt, multiple times to rewind</td></tr>
     <tr><td>Keyboard shortcuts</td><td><code>Alt+Enter</code> newline, <code>Alt+V</code> paste image, <code>Cmd+C/V</code> copy/paste, <code>Ctrl+U</code> clear line</td></tr>
+    <tr><td>Save money with DeepSeek</td><td>Register at platform.deepseek.com → top up ~$1.50 → cc-switch</td></tr>
     <tr><td>Let AI read files</td><td>Space + <code>@</code> + select files</td></tr>
     <tr><td>Find tools</td><td>"Please search/install relevant skills or GitHub repos"</td></tr>
     <tr><td>Install GitHub repos</td><td>Give Claude repo URL — it clones and configures</td></tr>

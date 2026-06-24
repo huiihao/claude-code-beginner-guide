@@ -779,6 +779,55 @@ claude
     <strong>🍎 Mac 用户特别注意</strong>：在 Mac Terminal 里，<code>Ctrl + C</code> 是<strong>中断进程</strong>（不是复制！）——这也是为什么 2.4 小节说用 <code>Ctrl + C</code> 两次退出 Claude。复制粘贴请用 <code>Cmd + C</code> / <code>Cmd + V</code>。
   </div>
 
+  <h3>2.10 💰 省钱必看：用 DeepSeek API，便宜到哭！</h3>
+  <p>Claude Code 默认使用 Anthropic 官方的 API，需要付费（美元结算，对学生来说不便宜）。但好消息是——<strong>Claude Code 支持切换模型供应商</strong>，你可以用国产的 <strong>DeepSeek API</strong>，效果依然很好，价格却便宜几十倍！</p>
+
+  <h4>为什么推荐 DeepSeek API？</h4>
+  <table>
+    <tr><th></th><th>Anthropic 官方</th><th>DeepSeek API</th></tr>
+    <tr><td>💵 费用</td><td>美元结算，较贵</td><td>人民币结算，<strong>非常便宜</strong></td></tr>
+    <tr><td>🎓 对学生</td><td>门槛较高</td><td><strong>充值 10 元能用很久</strong></td></tr>
+    <tr><td>🚀 体验</td><td>很好</td><td><strong>远超网页端免费对话</strong>，且支持大上下文</td></tr>
+    <tr><td>🇨🇳 国产</td><td>—</td><td>支持国产，响应快</td></tr>
+  </table>
+  <blockquote><p>💰 简单说：花一杯奶茶的钱（~10 元），就能用上好几个月的高质量 AI 编程助手。</p></blockquote>
+
+  <h4>方法一：用 cc-switch 一键切换（推荐，最简单）</h4>
+  <p><a href="https://github.com/farion1231/cc-switch" target="_blank" rel="noopener">cc-switch</a> 是一个专为 Claude Code 设计的模型切换工具，图形化界面，几下点击就完成配置。也可访问 <a href="https://www.ccswitch.io/zh/" target="_blank" rel="noopener">ccswitch.io</a>。</p>
+  <pre><code># 第 1 步：安装 cc-switch
+# 访问 https://github.com/farion1231/cc-switch 或 https://www.ccswitch.io/zh/
+# 按照说明下载安装
+
+# 第 2 步：打开 cc-switch，选择「DeepSeek」作为模型供应商
+
+# 第 3 步：填入你的 DeepSeek API Key
+#      （在 https://platform.deepseek.com 注册并获取）
+
+# 第 4 步：点击「应用配置」→ 搞定！</code></pre>
+  <p>配置完成后重新启动 Claude Code，它就会走 DeepSeek 的 API 了。</p>
+
+  <h4>方法二：手动修改配置文件</h4>
+  <p>如果你喜欢自己动手，也可以直接编辑 Claude Code 的配置文件：</p>
+  <pre><code># 配置文件位置：
+~/.claude/settings.json</code></pre>
+  <p>打开这个文件，添加或修改以下内容（以 DeepSeek 为例）：</p>
+  <pre><code>{
+  "model": "deepseek-chat",
+  "apiKey": "你的DeepSeek-API-Key",
+  "baseURL": "https://api.deepseek.com"
+}</code></pre>
+  <div class="callout warn"><strong>⚠️ 注意</strong>：具体的配置字段名可能随 Claude Code 版本变化。如果你不确定怎么填，直接用方法一的 cc-switch 最省事。</div>
+
+  <h4>注册 DeepSeek 并获取 API Key</h4>
+  <pre><code>第 1 步：打开 https://platform.deepseek.com
+第 2 步：注册账号（手机号即可）
+第 3 步：在控制台找到「API Keys」→ 创建一个新的 Key
+第 4 步：复制 Key，填入 cc-switch 或 settings.json
+第 5 步：充值 10 元（微信/支付宝都可以）
+第 6 步：开始用！🎉</code></pre>
+
+  <div class="callout tip"><strong>💡 如果你搞不定配置</strong>，直接把上面这段话复制给 Claude Code，它就能帮你一步步配好——前提是你用的是默认的 Claude Code（还没切换之前）。配好之后切换到 DeepSeek，后续就省钱了。</div>
+
   <!-- ==================== Section 3 ==================== -->
   <h2 id="section3">三、让 AI 读你的文件</h2>
 
@@ -1162,6 +1211,7 @@ X 轴是月份（1月到12月），Y 轴是温度（摄氏度）：
     <tr><td>继续对话</td><td><code>/resume</code> 恢复历史对话</td></tr>
     <tr><td>ESC 后悔药</td><td>按一次中断，按多次回退到之前的对话</td></tr>
     <tr><td>快捷键</td><td><code>Alt+Enter</code> 换行、<code>Alt+V</code> 贴图、<code>Cmd+C/V</code> 复制粘贴、<code>Ctrl+U</code> 清空行</td></tr>
+    <tr><td>省钱用 DeepSeek</td><td>注册 platform.deepseek.com → 充 10 元 → cc-switch 切换</td></tr>
     <tr><td>让 AI 读文件</td><td>空格 + <code>@</code> + 选择文件</td></tr>
     <tr><td>找工具</td><td>"请搜索/安装相关 skills 或 GitHub 仓库"</td></tr>
     <tr><td>装 GitHub 仓库</td><td>给 Claude 仓库地址，它会自己 clone 和配置</td></tr>
