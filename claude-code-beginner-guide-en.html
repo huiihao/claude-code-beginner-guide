@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Claude Code Beginner's Guide</title>
+<style>
+  /* ========== CSS Reset & Variables ========== */
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text: #1a1a2e;
+    --text-secondary: #555;
+    --accent: #d97706;
+    --accent-light: #fef3c7;
+    --border: #e5e7eb;
+    --code-bg: #f1f5f9;
+    --code-text: #1e293b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.1);
+    --sidebar-bg: #fafbfc;
+    --table-stripe: #f8fafc;
+    --tip-bg: #eff6ff;
+    --tip-border: #93c5fd;
+    --warn-bg: #fef9c3;
+    --warn-border: #fde047;
+    --success-bg: #f0fdf4;
+    --success-border: #86efac;
+    --radius: 8px;
+    --transition: 0.2s ease;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --bg-secondary: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #f59e0b;
+    --accent-light: #422006;
+    --border: #334155;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.4);
+    --sidebar-bg: #1a1f2e;
+    --table-stripe: #1a2332;
+    --tip-bg: #172554;
+    --tip-border: #1d4ed8;
+    --warn-bg: #422006;
+    --warn-border: #a16207;
+    --success-bg: #052e16;
+    --success-border: #166534;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  #app { display: flex; min-height: 100vh; }
+
+  #sidebar {
+    width: 260px; min-width: 260px; position: fixed; top: 0; left: 0;
+    height: 100vh; background: var(--sidebar-bg);
+    border-right: 1px solid var(--border); overflow-y: auto; z-index: 100;
+    transition: transform var(--transition), background var(--transition); padding: 20px 0;
+  }
+  #sidebar.hidden { transform: translateX(-100%); }
+  #sidebar-header { padding: 0 20px 16px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  #sidebar-header h2 { font-size: 1rem; font-weight: 700; color: var(--accent); }
+  #sidebar nav { padding: 0 12px; }
+  #sidebar nav a {
+    display: block; padding: 6px 12px; font-size: 0.85rem;
+    color: var(--text-secondary); text-decoration: none; border-radius: 6px;
+    transition: all var(--transition); margin-bottom: 1px;
+  }
+  #sidebar nav a:hover, #sidebar nav a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+  #main { margin-left: 260px; flex: 1; max-width: 860px; padding: 32px 48px 80px; transition: margin var(--transition); }
+  #main.expanded { margin-left: 0; }
+
+  #topbar {
+    position: sticky; top: 0; background: var(--bg); padding: 12px 0;
+    border-bottom: 1px solid var(--border); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px; z-index: 50;
+    transition: background var(--transition);
+  }
+  #menu-btn, #theme-btn { background: none; border: 1px solid var(--border); color: var(--text); font-size: 1.1rem; cursor: pointer; padding: 6px 10px; border-radius: var(--radius); transition: all var(--transition); }
+  #menu-btn:hover, #theme-btn:hover { background: var(--bg-secondary); border-color: var(--accent); }
+  #topbar h1 { font-size: 1.15rem; font-weight: 700; flex: 1; }
+
+  h2 { font-size: 1.65rem; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); color: var(--text); }
+  h3 { font-size: 1.2rem; margin: 32px 0 12px; color: var(--text); }
+  h4 { font-size: 1.05rem; margin: 24px 0 8px; color: var(--text); }
+  p { margin: 10px 0; color: var(--text-secondary); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--text); }
+  blockquote { border-left: 4px solid var(--accent); padding: 8px 16px; margin: 16px 0; background: var(--accent-light); border-radius: 0 var(--radius) var(--radius) 0; }
+  blockquote p { margin: 4px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  code { background: var(--code-bg); color: var(--code-text); padding: 2px 6px; border-radius: 4px; font-family: "JetBrains Mono","Fira Code","SF Mono","Cascadia Code",Consolas,monospace; font-size: 0.88em; }
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; line-height: 1.6; position: relative; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  .copy-btn { position: absolute; top: 8px; right: 12px; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; padding: 4px 10px; border-radius: 4px; transition: all var(--transition); opacity: 0; }
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .copy-btn.copied { background: #166534; color: #fff; border-color: #166534; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+  th, td { padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+  th { background: var(--bg-secondary); font-weight: 700; color: var(--text); }
+  tr:nth-child(even) td { background: var(--table-stripe); }
+
+  .callout { padding: 12px 18px; margin: 16px 0; border-radius: var(--radius); border-left: 4px solid; font-size: 0.92rem; }
+  .callout.tip { background: var(--tip-bg); border-left-color: var(--tip-border); }
+  .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); }
+  .callout.success { background: var(--success-bg); border-left-color: var(--success-border); }
+
+  #back-to-top { position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: #fff; border: none; font-size: 1.3rem; cursor: pointer; box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(20px); transition: all var(--transition); pointer-events: none; z-index: 200; }
+  #back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  #back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+
+  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); z-index: 300; transition: width 0.1s linear; }
+
+  @media (max-width: 900px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; padding: 20px 24px 60px; }
+    #main.expanded { margin-left: 0; }
+    #topbar h1 { font-size: 1rem; }
+    h2 { font-size: 1.35rem; }
+    pre { font-size: 0.78rem; padding: 12px 14px; }
+  }
+
+  @media print {
+    #sidebar, #topbar, #back-to-top, #progress-bar, .copy-btn { display: none; }
+    #main { margin-left: 0; max-width: 100%; padding: 0; }
+    body { font-size: 12px; }
+    pre { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<aside id="sidebar">
+  <div id="sidebar-header"><h2>📖 Contents</h2></div>
+  <nav>
+    <a href="#section1">1. Meet the Terminal</a>
+    <a href="#section2">2. Starting Claude Code</a>
+    <a href="#section3">3. Let AI Read Your Files</a>
+    <a href="#section4">4. Core Tips</a>
+    <a href="#section5">5. Markdown (.md) Files</a>
+    <a href="#section6">6. LaTeX Documents</a>
+    <a href="#section7">7. Interactive HTML</a>
+    <a href="#section8">8. Python Data Charts</a>
+    <a href="#section9">9. Plan Mode Explained</a>
+    <a href="#section10">10. Summary & Templates</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div id="topbar">
+    <button id="menu-btn" title="Toggle sidebar" aria-label="Toggle sidebar">☰</button>
+    <h1>🚀 Claude Code Beginner's Guide</h1>
+    <button id="theme-btn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+  </div>
+
+  <blockquote><p><em>— Written for college students who "know nothing" (but you're actually pretty smart!)</em></p></blockquote>
+  <hr>
+  <p>Hello! If this is your first time hearing about "Claude Code," your first time opening "Terminal," or even your first time typing commands on a computer — this guide is for you. Don't worry. Follow along step by step, and you'll turn Claude Code into your super assistant for homework, projects, and data visualization!</p>
+  <p>Let's start from the very, very basics 🐣</p>
+  <hr>
+
+  <!-- ==================== Section 1 ==================== -->
+  <h2 id="section1">1. Getting Ready: Meet the Terminal</h2>
+  <h3>1.1 What Is the "Terminal"?</h3>
+  <p>The Terminal is a window where you <strong>talk to your computer using text</strong>. Instead of clicking around with your mouse, you just <strong>type a few words</strong> and the computer understands and executes them. Pretty cool, right?</p>
+
+  <h3>1.2 How to Open It</h3>
+  <p>On a Mac, the easiest way:</p>
+  <blockquote><p>🔍 Press <code>Command + Space</code> (Spotlight Search), type <strong><code>terminal</code></strong>, then press Enter.</p></blockquote>
+  <p>Boom! A window with black background and white text (or maybe white background and black text) pops up. Don't be intimidated — it's just waiting for you to speak.</p>
+  <div class="callout tip"><strong>💡 Tip</strong>: If the default font is too small, press <code>Command + +</code> to zoom in, <code>Command + -</code> to zoom out.</div>
+
+  <h3>1.3 The 6 Commands You Must Know</h3>
+  <p>These commands are just like dragging and dropping in the "File Manager," except you use words instead of a mouse. Every command follows this pattern:</p>
+  <pre><code>command [options] [target]</code></pre>
+  <p>Let's meet them one by one:</p>
+  <hr>
+
+  <h4>📂 <code>ls</code> — See What's Here</h4>
+  <pre><code>ls</code></pre>
+  <p><strong>What it does</strong>: Lists all files and subfolders in the current folder.</p>
+  <table>
+    <tr><th>Common Variant</th><th>Meaning</th></tr>
+    <tr><td><code>ls</code></td><td>List all files in the current directory</td></tr>
+    <tr><td><code>ls -l</code></td><td>Show detailed info (size, date)</td></tr>
+    <tr><td><code>ls -a</code></td><td>Include hidden files (those starting with <code>.</code>)</td></tr>
+    <tr><td><code>ls -la</code></td><td>Detailed info + hidden files — most commonly used!</td></tr>
+  </table>
+  <hr>
+
+  <h4>🚪 <code>cd</code> — Enter a Folder</h4>
+  <pre><code>cd folder-name</code></pre>
+  <p><strong>What it does</strong>: Changes your current folder (like double-clicking into a folder).</p>
+  <table>
+    <tr><th>Common Usage</th><th>Meaning</th></tr>
+    <tr><td><code>cd Desktop</code></td><td>Go to Desktop</td></tr>
+    <tr><td><code>cd ..</code></td><td>Go up one level</td></tr>
+    <tr><td><code>cd ~</code></td><td>Go back to your "home" directory</td></tr>
+    <tr><td><code>cd /</code></td><td>Go to the very top level (root)</td></tr>
+  </table>
+  <blockquote><p>🧠 <strong>Understanding paths</strong>: <code>~</code> = <code>/Users/your-username</code>, your "home"; <code>.</code> = current folder; <code>..</code> = parent folder. Think of it like giving directions: "home → leave neighborhood → take subway → arrive." A path is your "address."</p></blockquote>
+  <hr>
+
+  <h4>📁 <code>mkdir</code> — Create a New Folder</h4>
+  <pre><code>mkdir new-folder-name
+mkdir Homework</code></pre>
+  <p>After running this, a folder called "Homework" appears in the current directory.</p>
+  <hr>
+
+  <h4>📝 <code>cp</code> — Copy a File</h4>
+  <pre><code>cp source-file destination
+cp report.txt ~/Desktop/</code></pre>
+  <p>↑ Copies "report.txt" to the Desktop.</p>
+  <table><tr><th>Common Variant</th><th>Meaning</th></tr><tr><td><code>cp -r folder destination</code></td><td>Copy an entire folder (<code>-r</code> = recursive)</td></tr></table>
+  <hr>
+
+  <h4>🚚 <code>mv</code> — Move / Rename</h4>
+  <pre><code>mv source destination</code></pre>
+  <p><strong>Dual identity</strong>: If the destination is another directory → move. If the destination is a new name → rename.</p>
+  <pre><code>mv report.txt ~/Documents/    # Move to Documents folder
+mv old-name.txt new-name.txt  # Rename</code></pre>
+  <hr>
+
+  <h4>🗑️ <code>rm</code> — Delete a File</h4>
+  <pre><code>rm filename</code></pre>
+  <div class="callout warn"><strong>⚠️ Warning!</strong> Files deleted in the Terminal do not go to the Trash — once deleted, they're gone for real! Double-check before you hit Enter!!</div>
+  <pre><code>rm useless-draft.txt          # Delete one file
+rm -r entire-folder/          # Delete a folder (be careful!)
+rm -rf entire-folder/         # Force delete (BE VERY CAREFUL!!)</code></pre>
+  <hr>
+
+  <div class="callout success">
+    <strong>✅ Quick Practice</strong><br><br>
+    Open your Terminal and try this drill:
+    <pre><code>cd ~/Desktop              # Go to Desktop
+mkdir claude-test         # Create a folder called claude-test
+cd claude-test            # Enter it
+ls                        # See what's inside (should be empty)
+cd ..                     # Go back to Desktop
+rm -r claude-test         # Delete the test folder</code></pre>
+    If you got through all of that, congratulations — you now know basic Terminal operations! 🎉
+  </div>
+
+  <h3>1.4 Understanding File Paths on Mac (Display Name ≠ Actual Path)</h3>
+  <p>Your Mac's operating system may show folder names in your language in Finder, but in Terminal, <strong>they go by their actual English names</strong>:</p>
+  <table>
+    <tr><th>What Finder Shows</th><th>Actual Path in Terminal</th><th>Full Path</th></tr>
+    <tr><td>Desktop</td><td><code>Desktop</code></td><td><code>~/Desktop</code> or <code>/Users/your-username/Desktop</code></td></tr>
+    <tr><td>Downloads</td><td><code>Downloads</code></td><td><code>~/Downloads</code></td></tr>
+    <tr><td>Documents</td><td><code>Documents</code></td><td><code>~/Documents</code></td></tr>
+    <tr><td>Pictures</td><td><code>Pictures</code></td><td><code>~/Pictures</code></td></tr>
+    <tr><td>Music</td><td><code>Music</code></td><td><code>~/Music</code></td></tr>
+    <tr><td>Movies</td><td><code>Movies</code></td><td><code>~/Movies</code></td></tr>
+    <tr><td>Applications</td><td><code>Applications</code></td><td><code>/Applications</code></td></tr>
+  </table>
+  <blockquote><p>🧠 <strong>Remember this rule</strong>: What you see in Finder is a "display name" — the Terminal cares about the "real name" (path name). <strong>Paths always use the English names.</strong></p></blockquote>
+
+  <h4>What does <code>/</code> mean in a path?</h4>
+  <p><code>/</code> is a "separator" between folders, just like <code>/</code> in a URL:</p>
+  <pre><code>~/Downloads/test</code></pre>
+  <p>In plain English: <strong>"home → Downloads → test (a folder or a file)"</strong></p>
+  <ul>
+    <li><code>test</code> could be a <strong>folder</strong> or a <strong>file</strong> — you can't tell from the path alone. Use <code>ls</code> to check.</li>
+    <li>If it has an extension (like <code>test.txt</code>, <code>test.py</code>, <code>test.html</code>), it's almost certainly a file.</li>
+  </ul>
+
+  <h4>Naming Tips</h4>
+  <p>When naming files and folders, try to:</p>
+  <ul>
+    <li>❌ Avoid non-English characters (some tools break)</li>
+    <li>❌ Avoid spaces (<code>my homework.txt</code> → you'd have to type <code>my\ homework.txt</code> or use quotes in Terminal)</li>
+    <li>✅ Use English + underscores/hyphens (e.g., <code>homework_1.txt</code>, <code>course-project</code>)</li>
+  </ul>
+
+  <h3>1.5 Good Habit: One Project, One Folder</h3>
+  <p>Before you start using Claude Code for a course assignment, I strongly recommend this habit:</p>
+  <pre><code># Step 1: Create a dedicated folder for each course/project
+mkdir ~/Desktop/digital-signal-processing-hw
+
+# Step 2: cd into it
+cd ~/Desktop/digital-signal-processing-hw
+
+# Step 3: Launch Claude from inside this folder
+claude</code></pre>
+  <p><strong>Why do this?</strong> 🎯</p>
+  <ul>
+    <li>Claude's "field of view" is centered on the folder you launched it from</li>
+    <li>You won't mix up files from different courses</li>
+    <li>The conversation context (history) is tied to the project</li>
+    <li>Finding files later is easy — no messy desktop full of scattered files</li>
+  </ul>
+  <div class="callout tip"><strong>💡 Pro tip</strong>: If you want Claude to see files already in a folder, use the <code>@</code> symbol covered in Section 3.</div>
+
+  <!-- ==================== Section 2 ==================== -->
+  <h2 id="section2">2. Starting Claude Code</h2>
+
+  <h3>2.1 Check If Claude Code Is Already Installed</h3>
+  <p>In Terminal, type:</p>
+  <pre><code>claude --version</code></pre>
+  <p>If you see a version number (like <code>v1.0.x</code>), it's installed. Skip to 2.3.</p>
+  <p>If you see <code>command not found: claude</code>, follow 2.2 to install it.</p>
+
+  <h3>2.2 Installing Claude Code</h3>
+  <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+  <blockquote>
+    <p>If you get <code>npm: command not found</code>, your Mac doesn't have Node.js yet. Don't panic — here's the easiest fix:</p>
+    <ol>
+      <li>Go to <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a></li>
+      <li>Download the <strong>LTS</strong> version on the left</li>
+      <li>Double-click the <code>.pkg</code> file to install, clicking "Continue" all the way through</li>
+      <li>After installation, <strong>close Terminal and reopen it</strong></li>
+      <li>Try <code>npm install -g @anthropic-ai/claude-code</code> again</li>
+    </ol>
+  </blockquote>
+
+  <h3>2.3 Launch!</h3>
+  <pre><code>claude</code></pre>
+  <p>After you press Enter, <strong>the first time</strong> will open your browser to log in to your Anthropic account. Just follow the prompts (you can use a Google account to sign in).</p>
+  <p>Once logged in, return to Terminal and you'll see something like this:</p>
+  <pre><code>┌─────────────────────────────────────────────┐
+│  Claude Code v1.x.x                         │
+│  Type /help for available commands          │
+│                                             │
+│  >                                           │
+└─────────────────────────────────────────────┘</code></pre>
+  <p>The <code>&gt;</code> is where you talk to Claude. You can type in plain English! For example:</p>
+  <pre><code>Help me write an outline for my course assignment</code></pre>
+
+  <div class="callout tip"><strong>💡 Tip</strong>: When you want to exit Claude Code, type <code>/exit</code> or press <code>Ctrl + C</code> twice.</div>
+
+  <h3>2.4 How to Exit Claude Code</h3>
+  <table>
+    <tr><th>Method</th><th>Operation</th><th>Effect</th></tr>
+    <tr><td>Graceful exit</td><td>Type <code>/exit</code></td><td>Exits cleanly; conversation history is preserved</td></tr>
+    <tr><td>Force quit</td><td>Press <code>Ctrl + C</code> <strong>twice</strong></td><td>"I'm done talking, bye" — history is still preserved</td></tr>
+    <tr><td>Single Ctrl+C</td><td>Press once</td><td>Only interrupts the current operation; does not exit</td></tr>
+  </table>
+  <div class="callout tip"><strong>💡 Recommendation</strong>: Get used to <strong>double-tapping <code>Ctrl + C</code></strong> to exit — quick and easy.</div>
+
+  <h3>2.5 Resuming a Previous Conversation</h3>
+  <p>Chatted halfway yesterday and want to continue today? Use this:</p>
+  <pre><code># First cd to your project folder
+cd ~/Desktop/digital-signal-processing-hw
+
+# Then launch Claude
+claude
+
+# Inside Claude Code, type:
+/resume</code></pre>
+  <p><strong><code>/resume</code></strong> will show a list of past conversations — use the arrow keys to pick one, press Enter, and continue chatting!</p>
+  <p>It's just like chat history in a messaging app — Claude remembers everything you talked about before.</p>
+  <div class="callout tip"><strong>💡 Note</strong>: <code>/resume</code> shows conversations you started <strong>inside this folder</strong>. This is another reason the "one project, one folder" habit pays off.</div>
+
+  <h3>2.6 Common Built-in Claude Code Commands</h3>
+  <table>
+    <tr><th>Command</th><th>What It Does</th><th>When to Use It</th></tr>
+    <tr><td><code>/help</code></td><td>Show all available commands</td><td>When you forget a command</td></tr>
+    <tr><td><code>/exit</code></td><td>Exit Claude Code</td><td>Done chatting</td></tr>
+    <tr><td><code>/resume</code></td><td>View and resume past conversations</td><td>Picking up where you left off</td></tr>
+    <tr><td><code>/clear</code></td><td>Clear current conversation context</td><td>Topic has gone off the rails</td></tr>
+    <tr><td><code>/cost</code></td><td>Show token usage for this session</td><td>Check quota usage</td></tr>
+    <tr><td><code>/status</code></td><td>View current session status</td><td>See what Claude is up to</td></tr>
+    <tr><td><code>/add-dir</code></td><td>Add a folder to Claude's view</td><td>Let it see more files</td></tr>
+  </table>
+  <div class="callout tip"><strong>💡</strong> Type <code>/help</code> anytime to get the latest list of commands.</div>
+
+  <h3>2.7 Running Into Problems? Just Tell Claude!</h3>
+  <p>This is the single most important principle — <strong>you don't actually need to know how to code; you just need to know how to "tell Claude what happened."</strong></p>
+  <table>
+    <tr><th>Your Situation</th><th>What You Say to Claude</th><th>What Claude Does</th></tr>
+    <tr><td>Code threw an error</td><td>"This code gave an error: <code>[paste error]</code>, please fix it"</td><td>Diagnoses and fixes the error</td></tr>
+    <tr><td>Want to install a tool</td><td>"I want to use ffmpeg for video processing but I don't have it — please install it"</td><td>Searches and installs</td></tr>
+    <tr><td>No idea how to do something</td><td>"I want to chart CSV data into graphs. I have zero clue — please walk me through it step by step"</td><td>Writes code + explains</td></tr>
+    <tr><td>Code is too slow</td><td>"This program runs way too slow. Can you optimize it?"</td><td>Analyzes and optimizes</td></tr>
+    <tr><td>Feeling frustrated 😤</td><td>"This stupid code just won't work. I'm about to lose it."</td><td>Comforts you + helps debug</td></tr>
+  </table>
+  <blockquote><p>🎯 <strong>Remember</strong>: Claude Code isn't just a coding tool — it's like an <strong>all-purpose TA sitting right next to you</strong> — it can install things, fix errors, explain concepts, and even listen to you vent. Just describe the problem clearly. <strong>You don't need to actually know how to code.</strong></p></blockquote>
+
+  <h3>2.8 Typed Something Wrong / Hit Enter by Accident? No Worries — ESC Is Your "Undo Button"</h3>
+  <p>When using Claude Code, you might run into these awkward moments:</p>
+  <table>
+    <tr><th>Scenario</th><th>Your Inner Monologue</th></tr>
+    <tr><td>Typed a long message, realized it's poorly worded</td><td>"Ugh, can I take that back…"</td></tr>
+    <tr><td>Accidentally hit Enter before finishing</td><td>"Wait, I wasn't done!!"</td></tr>
+    <tr><td>Claude started answering but you want to change your request</td><td>"No no, that's not what I meant!"</td></tr>
+    <tr><td>Don't like this response and want to go back</td><td>"This answer is bad. I want to rewind…"</td></tr>
+  </table>
+  <p><strong>The solution is super simple — just press the <code>ESC</code> key!</strong></p>
+  <table>
+    <tr><th>Action</th><th>Effect</th></tr>
+    <tr><td>Press <strong>1 time <code>ESC</code></strong></td><td>🛑 Interrupt the current conversation / Cut Claude off mid-sentence</td></tr>
+    <tr><td>Press <strong>multiple times <code>ESC</code></strong></td><td>⏪ Pops up a "rewind to where?" selector — step back through conversation checkpoints</td></tr>
+  </table>
+  <blockquote><p>🎮 Think of <code>ESC</code> as the <strong>"pause + load save" button in a video game</strong> — press once to pause, press a few times to see save points and pick one to go back. You never have to fear "saying the wrong thing" — you can always undo!</p></blockquote>
+
+  <h3>2.9 Handy Keyboard Shortcuts for Claude Code</h3>
+  <h4>Claude Code — Specific Shortcuts</h4>
+  <table>
+    <tr><th>Shortcut</th><th>What It Does</th><th>When to Use</th></tr>
+    <tr><td><code>ESC</code></td><td>Interrupt / rewind conversation</td><td>Typed something wrong, unhappy with response, want to go back</td></tr>
+    <tr><td><code>Alt + Enter</code></td><td>New line (without sending)</td><td>Writing multi-line content — Enter won't send</td></tr>
+    <tr><td><code>Alt + V</code></td><td>Paste an image</td><td>Paste a screenshot for Claude to see</td></tr>
+  </table>
+  <div class="callout tip"><strong>📸 About pasting images</strong>: If code throws an error, just screenshot it and <code>Alt+V</code> — way faster than manually copying error messages. Claude can "see" the content in images.</div>
+
+  <h4>Terminal — General Shortcuts (Also Work Inside Claude Code)</h4>
+  <div class="callout warn"><strong>⚠️ Mac and Windows shortcuts differ!</strong> The table below shows <strong>Mac</strong> shortcuts. If you're on Windows, swap <code>Cmd</code> for <code>Ctrl</code> (except for <code>Ctrl+U/A/E/W</code> — those control keys are the same on both platforms).</div>
+  <table>
+    <tr><th>Shortcut (Mac)</th><th>Shortcut (Windows)</th><th>What It Does</th><th>When to Use</th></tr>
+    <tr><td><code>Cmd + C</code></td><td><code>Ctrl + C</code></td><td>Copy selected text</td><td>—</td></tr>
+    <tr><td><code>Cmd + V</code></td><td><code>Ctrl + V</code></td><td>Paste text</td><td>—</td></tr>
+    <tr><td><code>Ctrl + U</code></td><td>Same</td><td>Quickly delete entire line</td><td>"I typed a bunch and it's all wrong — nuke it"</td></tr>
+    <tr><td><code>Ctrl + A</code></td><td>Same</td><td>Jump to beginning of line</td><td>Want to add something at the start</td></tr>
+    <tr><td><code>Ctrl + E</code></td><td>Same</td><td>Jump to end of line</td><td>Want to keep typing at the end</td></tr>
+    <tr><td><code>Ctrl + W</code></td><td>Same</td><td>Delete previous word</td><td>Quickly remove the word you just mistyped</td></tr>
+    <tr><td><code>Ctrl + K</code></td><td>Same</td><td>Delete from cursor to end of line</td><td>Kill the second half of a line</td></tr>
+    <tr><td><code>Ctrl + Y</code></td><td>Same</td><td>Paste what you just deleted</td><td>"Oops, deleted too much — give it back!"</td></tr>
+  </table>
+  <div class="callout tip"><strong>💡 Tip</strong>: <code>Ctrl + U</code> is a total lifesaver — when you've typed a long command and realize it's all wrong, don't wear out your Backspace key; just <code>Ctrl + U</code> and it's gone in one second!</div>
+  <div class="callout warn"><strong>🍎 Important for Mac users</strong>: In Mac Terminal, <code>Ctrl + C</code> is <strong>interrupt signal</strong> (NOT copy!) — that's exactly why Section 2.4 says to use <code>Ctrl + C</code> twice to exit Claude. For copy/paste, use <code>Cmd + C</code> / <code>Cmd + V</code>.</div>
+
+  <!-- ==================== Section 3 ==================== -->
+  <h2 id="section3">3. Letting AI Read Your Files</h2>
+  <p>Claude is very smart, but it doesn't "automatically see" the files on your computer. You need to <strong>manually tell it</strong> which ones to read.</p>
+
+  <h3>3.1 How to Do It (Super Easy)</h3>
+  <ol>
+    <li>In Claude Code's input box, first <strong>press the Spacebar once</strong></li>
+    <li>Then type <strong><code>@</code></strong> (that's Shift+2)</li>
+    <li>A file list will pop up at the bottom of the screen — use the <strong>up/down arrow keys</strong> to select a file</li>
+    <li>Press <strong>Enter</strong> to confirm</li>
+  </ol>
+  <p>Like this:</p>
+  <pre><code>> Please check this code for any issues</code></pre>
+  <p>(After pressing Space + @, the file picker pops up)</p>
+  <pre><code>> Please check this code for any issues @homework1.cpp</code></pre>
+
+  <h3>3.2 You Can Select Multiple Files</h3>
+  <p>After typing <code>@</code>, you can repeat the operation to select multiple files for Claude to look at together:</p>
+  <pre><code>> Please analyze the relationship between @src/main.py and @src/utils.py</code></pre>
+
+  <h3>3.3 Why Let Claude Read Files First?</h3>
+  <p>Here's an analogy 🌰: You wouldn't tell someone who has never read your thesis, "Help me fix Chapter 3." Same idea — Claude needs to <strong>see your file contents first</strong> before it can give you useful advice.</p>
+  <div class="callout tip"><strong>💡 Remember</strong>: If you forget which folder your file is in, first use <code>ls</code> and <code>cd</code> in Terminal to browse around, find the target file, note its path and name, then reference it inside Claude Code.</div>
+
+  <!-- ==================== Section 4 ==================== -->
+  <h2 id="section4">4. Core Tips for Getting Things Done</h2>
+  <h3>4.1 The Magic Spell 🔮</h3>
+  <p>Your computer might not have much special software installed — that's totally normal! Claude can <strong>automatically search, install, and invoke</strong> the tools you need. Just add something like this to your prompt:</p>
+  <blockquote><p><strong>"Please search / invoke / install relevant skills or GitHub repositories to complete this task."</strong></p></blockquote>
+
+  <h3>4.2 Example</h3>
+  <p>❌ <strong>Weak prompt</strong>:</p>
+  <pre><code>Draw a data chart for me</code></pre>
+  <p>✅ <strong>Better prompt</strong>:</p>
+  <pre><code>Use Python's matplotlib to draw a data chart for me. If matplotlib isn't installed, please install it first.
+If there are relevant skills available, please search for and invoke MCP tools or GitHub repos to help.</code></pre>
+
+  <h3>4.3 What Claude Can Do for You</h3>
+  <table>
+    <tr><th>What You Need</th><th>What You Can Say</th></tr>
+    <tr><td>Install a Python package</td><td>"Please install xxx first, then write the code"</td></tr>
+    <tr><td>Download a GitHub project</td><td>"Please clone the xxx repo from GitHub"</td></tr>
+    <tr><td>Invoke a specific tool</td><td>"Please install and use pandoc to convert the file to PDF"</td></tr>
+    <tr><td>Search for existing solutions</td><td>"Please search for any existing libraries that can handle this task"</td></tr>
+  </table>
+
+  <h3>4.4 Making Claude Install from a GitHub Repository</h3>
+  <p>Sometimes the tool you want can't just be <code>pip install</code>'d — it might be an open-source project on GitHub. Don't worry — Claude can handle that too!</p>
+  <h4>Example: Installing claude-hud</h4>
+  <pre><code>Please install the tool from https://github.com/jarrodwatts/claude-hud.
+Please complete the following steps:
+1. Clone this repository locally
+2. Install dependencies according to its README
+3. Configure it to work with Claude Code</code></pre>
+  <p>Claude will read the repository's README on its own, figure out the installation process, and walk you through it step by step — you don't need to read any docs yourself.</p>
+  <blockquote><p>🎯 <strong>Universal template</strong>:</p>
+  <pre><code>Please install this GitHub repository: [paste repo URL here]
+If there are additional dependencies, please install them too.</code></pre></blockquote>
+
+  <h3>4.5 Making Claude Install Skills</h3>
+  <h4>Example: Installing Anthropic's Official Skills Collection</h4>
+  <pre><code>Please install the skills from https://github.com/anthropics/skills.
+Follow the repository's instructions to configure all available skills in my Claude Code.</code></pre>
+  <blockquote><p>💡 <strong>What are Skills?</strong> Think of them as "specialized training" you install for Claude — without them, Claude knows a little about everything; with a specific skill installed, it becomes much more of an expert in that area.</p></blockquote>
+  <div class="callout tip"><strong>💡 Core mindset</strong>: Don't assume Claude "can't do it." Just state your needs clearly and let Claude figure out the tools on its own!</div>
+
+  <!-- ==================== Section 5 ==================== -->
+  <h2 id="section5">5. About .md Files (Markdown) — What Software to Use?</h2>
+  <h3>5.1 What Is Markdown?</h3>
+  <p>Markdown (<code>.md</code> for short) is a <strong>super simple formatting language</strong>. You don't need to click "Bold" or "Heading" buttons like in Word — just add a few symbols around your text.</p>
+  <table>
+    <tr><th>Desired Effect</th><th>Markdown Syntax</th><th>Final Result</th></tr>
+    <tr><td>Main heading</td><td><code># This is a heading</code></td><td>Large, bold heading</td></tr>
+    <tr><td>Subheading</td><td><code>## This is a subheading</code></td><td>Slightly smaller heading</td></tr>
+    <tr><td>Bold</td><td><code>**bold text**</code></td><td><strong>bold text</strong></td></tr>
+    <tr><td>Italic</td><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+    <tr><td>List</td><td><code>- item one</code></td><td>• item one</td></tr>
+    <tr><td>Link</td><td><code>[text](url)</code></td><td>Clickable hyperlink</td></tr>
+  </table>
+  <div class="callout tip"><strong>🎯 Key point</strong>: Claude Code often outputs content in Markdown format! So you need to know how to view it.</div>
+
+  <h3>5.2 What Software to Open .md Files With?</h3>
+  <h4>🌟 Option 1 (Recommended): VS Code</h4>
+  <ol><li>Go to <a href="https://code.visualstudio.com" target="_blank" rel="noopener">code.visualstudio.com</a> to download</li><li>Open <code>.md</code> file → press <code>Command + Shift + V</code> for live preview</li></ol>
+  <div class="callout success"><strong>✅</strong> Free, powerful, side-by-side preview</div>
+
+  <h4>📝 Option 2 (Easiest): Quick Look (Spacebar)</h4>
+  <p>Find <code>.md</code> file in Finder → select it → press <strong>Spacebar</strong>.</p>
+  <div class="callout success"><strong>✅</strong> Zero install, fastest</div>
+  <div class="callout warn"><strong>⚠️</strong> View-only, some complex formatting doesn't display well</div>
+
+  <h4>🎨 Option 3 (Prettiest): Typora</h4>
+  <p>Go to <a href="https://typora.io" target="_blank" rel="noopener">typora.io</a> → download → WYSIWYG editing.</p>
+  <div class="callout success"><strong>✅</strong> WYSIWYG, easy export</div>
+  <div class="callout warn"><strong>⚠️</strong> Full version ~$15, trial works indefinitely</div>
+
+  <h3>5.3 Quick Comparison</h3>
+  <table>
+    <tr><th>Software</th><th>Price</th><th>Preview</th><th>Best For</th></tr>
+    <tr><td><strong>Quick Look</strong></td><td>Free</td><td>Press Space</td><td>Quick glance</td></tr>
+    <tr><td><strong>TextEdit</strong></td><td>Free</td><td>No preview</td><td>Simple edits</td></tr>
+    <tr><td><strong>VS Code</strong></td><td>Free</td><td><code>Cmd+Shift+V</code></td><td>🔥 <strong>Most recommended</strong></td></tr>
+    <tr><td><strong>Typora</strong></td><td>Paid</td><td>WYSIWYG</td><td>Frequent writers</td></tr>
+  </table>
+
+  <h3>5.4 What to Do When Claude Outputs Markdown</h3>
+  <ol><li>Copy all of Claude's Markdown output</li><li>Create a new file in VS Code → paste → save as <code>xxx.md</code></li><li>Press <code>Command + Shift + V</code> (VS Code) or Spacebar (Finder) to view</li></ol>
+  <div class="callout tip"><strong>💡 Tip</strong>: To convert Markdown to HTML, say: <strong>"Please output the above Markdown as a single HTML file with all CSS and JS inline"</strong> — then double-click to open in your browser!</div>
+
+  <!-- ==================== Section 6 ==================== -->
+  <h2 id="section6">6. Outputting LaTeX Documents (Essential for Coursework)</h2>
+  <blockquote><p>Many STEM courses require beautifully typeset assignments. LaTeX was created exactly for this. Don't be scared — you don't need to learn LaTeX syntax. Claude writes it; you just need to compile it.</p></blockquote>
+
+  <h3>6.1 What Is a <code>.tex</code> File?</h3>
+  <p><code>.tex</code> is a LaTeX source file — it contains your <strong>content and formatting instructions</strong>. "Compile" it, and it turns into a beautiful PDF.</p>
+
+  <h3>6.2 Making Claude Write LaTeX</h3>
+  <pre><code>Please generate a LaTeX document (.tex file) for my course assignment on [topic].
+Requirements: with title, author, sections, and properly formatted math equations.</code></pre>
+
+  <h3>6.3 How to Compile → Use texpage.com</h3>
+  <p>Recommended online service: <strong><a href="https://texpage.com" target="_blank" rel="noopener">texpage.com</a></strong></p>
+  <h4>Compilation Steps:</h4>
+  <pre><code>Step 1: Open your browser and go to https://texpage.com
+Step 2: Click "New Project" in the top right corner
+Step 3: Give your project a name, like "Course Assignment"
+Step 4: Copy-paste all of Claude's generated .tex code
+Step 5: Click the "Compile" button at the top
+Step 6: Once compilation succeeds, click "Download PDF"</code></pre>
+  <blockquote><p>📸 The whole process is as simple as copying text into Google Docs and clicking "Export as PDF"!</p></blockquote>
+
+  <h3>6.4 Complete Prompt Template</h3>
+  <pre><code>Please generate a complete LaTeX document (.tex file) with these requirements:
+- Document type: article (with title, author, abstract, sections)
+- Content: about [your assignment topic]
+- Include at least one math equation
+- Include one table
+- Clean, well-formatted code
+
+At the top of the code, add this comment:
+% Copy this file's content to https://texpage.com to compile online</code></pre>
+  <div class="callout success"><strong>✅ Quick Practice</strong><br><br>Use the template above to have Claude generate a LaTeX document, then compile it on texpage.com!</div>
+  <div class="callout tip"><strong>💡 Tip</strong>: If compilation throws errors, <strong>copy the error message to Claude</strong> and it can fix them. Like this: <code>@error-log.txt This LaTeX compilation produced these errors. Please fix them.</code></div>
+
+  <!-- ==================== Section 7 ==================== -->
+  <h2 id="section7">7. Outputting Interactive HTML Presentations</h2>
+  <p>For class presentations, defense talks, data reports… often you need something <strong>beautiful that opens right in a browser</strong>.</p>
+
+  <h3>7.1 The Magic Spell 🎩</h3>
+  <blockquote><p><strong>"Please output a single HTML file with all CSS and JS code inline, with zero external dependencies."</strong></p></blockquote>
+
+  <h3>7.2 Why These Requirements?</h3>
+  <table>
+    <tr><th>Requirement</th><th>Reason</th></tr>
+    <tr><td><strong>Single HTML file</strong></td><td>No need to carry around a folder full of files</td></tr>
+    <tr><td><strong>Inline CSS</strong></td><td>No separate <code>.css</code> file needed</td></tr>
+    <tr><td><strong>Inline JS</strong></td><td>No separate <code>.js</code> file needed</td></tr>
+    <tr><td><strong>Zero external dependencies</strong></td><td>No internet connection needed — works offline</td></tr>
+  </table>
+
+  <h3>7.3 Complete Template</h3>
+  <pre><code>Please generate an interactive presentation webpage with these requirements:
+- Output a single HTML file with all CSS and JS code inline, zero external dependencies
+- Topic: about [your subject]
+- Style: modern, clean, suitable for classroom presentation
+- Content includes: title slide, 3-4 content slides, summary slide
+- Support keyboard navigation (left/right arrows)
+- Include appropriate animation transitions</code></pre>
+
+  <h3>7.4 How to Use It</h3>
+  <p>Claude gives you a long block of code → <strong>copy all of it</strong> → paste into a text editor → <strong>save as <code>.html</code> file</strong> (e.g., <code>presentation.html</code>) → double-click to open!</p>
+  <div class="callout tip"><strong>💡 Tip</strong>: When saving in TextEdit, do <strong>Format → Make Plain Text</strong> first, then save with <code>.html</code> extension. Or use <code>touch presentation.html</code> in Terminal to create an empty file, then open with VS Code.</div>
+
+  <h3>7.5 Level Up: Make Your Webpage Look Even Better</h3>
+  <ul><li>"Use a gradient background"</li><li>"Add a dark/light mode toggle button"</li><li>"Use Chart.js for data visualization" (Claude will inline Chart.js too)</li></ul>
+
+  <!-- ==================== Section 8 ==================== -->
+  <h2 id="section8">8. Drawing Data Charts with Python</h2>
+  <p>Lab experiments, data analysis reports… a good chart is worth a thousand words. Let Claude write the Python code to draw them!</p>
+
+  <h3>8.1 Basic Usage</h3>
+  <pre><code>Please write a Python script using matplotlib to draw [describe the chart you want].
+Here's the data: [paste data]
+Requirements: save as a PNG image at 300 DPI.</code></pre>
+
+  <h3>8.2 Complete Example</h3>
+  <pre><code>Please write a Python script using matplotlib to draw a line chart.
+X-axis: months (January through December), Y-axis: temperature (Celsius):
+[5, 8, 15, 20, 25, 30, 33, 32, 28, 22, 14, 8]
+Requirements:
+- Title: "2025 Monthly Average Temperature"
+- Save as temperature.png
+- If matplotlib isn't installed, please pip install it first</code></pre>
+
+  <h3>8.3 How to Run a Python Script</h3>
+  <pre><code>Step 1: Save the code as a .py file (e.g., plot.py)
+Step 2: In Terminal, cd to the file's directory
+Step 3: Run: python3 plot.py
+Step 4: Open the generated image file to view</code></pre>
+  <div class="callout warn"><strong>⚠️</strong> If your Mac says <code>python3: command not found</code>, go to <a href="https://python.org" target="_blank" rel="noopener">python.org</a> and download the installer.</div>
+
+  <h3>8.4 Quick Reference: Common Chart Types</h3>
+  <table>
+    <tr><th>Chart Type</th><th>What to Tell Claude</th></tr>
+    <tr><td>Line chart</td><td>"Draw a line chart"</td></tr>
+    <tr><td>Bar chart</td><td>"Draw a bar chart"</td></tr>
+    <tr><td>Pie chart</td><td>"Draw a pie chart"</td></tr>
+    <tr><td>Scatter plot</td><td>"Draw a scatter plot"</td></tr>
+    <tr><td>Histogram</td><td>"Draw a histogram"</td></tr>
+    <tr><td>Heatmap</td><td>"Draw a heatmap"</td></tr>
+    <tr><td>Multiple subplots</td><td>"Arrange two subplots side by side"</td></tr>
+  </table>
+  <div class="callout tip"><strong>💡 Tip</strong>: If Claude's code doesn't run, copy the <strong>full error message</strong> to it: "This code threw an error: <code>[paste error]</code>. Please fix it."</div>
+
+  <!-- ==================== Section 9 ==================== -->
+  <h2 id="section9">9. Why Does Claude Keep Asking Me Questions? — Plan Mode Explained</h2>
+
+  <h3>9.1 The First Time You See It, You Might Be Confused</h3>
+  <p>As you use Claude Code, you might see <strong><code>"1 plan mode"</code></strong> and options pop up:</p>
+  <pre><code>┌─────────────────────────────────────────────────┐
+│  Claude wants to:                                │
+│  Create 3 files, modify 2 files                  │
+│                                                  │
+│  [Accept]  [Reject]  [Modify]                    │
+└─────────────────────────────────────────────────┘</code></pre>
+  <p>You might be thinking: <strong>"I just asked you to write an assignment. Why are you making ME make choices??"</strong></p>
+  <p>Don't worry — this is a good thing.</p>
+
+  <h3>9.2 What Is Plan Mode?</h3>
+  <p>Plan Mode is Claude's <strong>"think first, act later"</strong> mode. The number (N = 1, 2, 3…) indicates which plan number this is.</p>
+  <p>It's like a <strong>meticulous construction crew</strong> — before knocking down a wall, they show you the blueprint first:</p>
+  <blockquote><p>"Boss, I'm planning to put a window in this wall. Here's the blueprint. Does it look good? If yes, I'll start."</p></blockquote>
+
+  <h3>9.3 What the Three Options Mean</h3>
+  <table>
+    <tr><th>Button</th><th>Meaning</th><th>When to Pick It</th></tr>
+    <tr><td><strong>Accept</strong></td><td>"OK, go ahead as planned"</td><td>The plan looks reasonable</td></tr>
+    <tr><td><strong>Reject</strong></td><td>"No, wrong direction"</td><td>It's completely not what you wanted</td></tr>
+    <tr><td><strong>Modify</strong></td><td>"Direction is about right, but needs tweaks"</td><td>Mostly OK, details need adjustment</td></tr>
+  </table>
+
+  <h3>9.4 Why Is This a Good Thing?</h3>
+  <p>🎯 <strong>Protects your files</strong>: Claude won't act recklessly — it first tells you what it intends to do, and only acts after you confirm. No more "I asked it to fix Chapter 3 and it rewrote my entire thesis" disasters.</p>
+  <p>🎯 <strong>Helps you quality-check</strong>: Sometimes you might casually toss out a vague request; Plan Mode makes Claude "translate" it back to you first so you can correct it in time.</p>
+
+  <h3>9.5 If You Don't Want to Choose Every Time…</h3>
+  <p>If you trust Claude, add this to your input:</p>
+  <blockquote><p><strong>"Please proceed"</strong> or <strong>"Just do it directly"</strong></p></blockquote>
+  <p>Claude will skip Plan Mode and get straight to work.</p>
+  <blockquote><p><strong>"Give me a plan first. I'll confirm before you execute."</strong></p></blockquote>
+  <div class="callout tip"><strong>💡 Advice</strong>: For <strong>important tasks</strong> (editing papers, modifying code, deleting files), let Claude lay out the plan in Plan Mode for you to review. For <strong>simple tasks</strong> (asking a question, looking something up), just say "Please proceed" to save time.</div>
+
+  <!-- ==================== Section 10 ==================== -->
+  <h2 id="section10">10. Summary & Handy Prompt Templates</h2>
+
+  <h3>10.1 What You've Learned</h3>
+  <table>
+    <tr><th>Skill</th><th>One-Line Recap</th></tr>
+    <tr><td>Open Terminal</td><td><code>Command + Space</code> → type <code>terminal</code></td></tr>
+    <tr><td>Basic commands</td><td><code>ls</code> / <code>cd</code> / <code>mkdir</code> / <code>cp</code> / <code>mv</code> / <code>rm</code></td></tr>
+    <tr><td>File paths</td><td>Finder shows display names; Terminal uses English names</td></tr>
+    <tr><td>Project folders</td><td>One folder per course, <code>cd</code> into it, then launch <code>claude</code></td></tr>
+    <tr><td>Launch Claude</td><td>Type <code>claude</code> in Terminal</td></tr>
+    <tr><td>Exit Claude</td><td><code>Ctrl + C</code> twice or <code>/exit</code></td></tr>
+    <tr><td>Resume conversation</td><td><code>/resume</code> to pick up past conversations</td></tr>
+    <tr><td>ESC "undo button"</td><td>Press once to interrupt, multiple times to rewind</td></tr>
+    <tr><td>Keyboard shortcuts</td><td><code>Alt+Enter</code> newline, <code>Alt+V</code> paste image, <code>Cmd+C/V</code> copy/paste, <code>Ctrl+U</code> clear line</td></tr>
+    <tr><td>Let AI read files</td><td>Space + <code>@</code> + select files</td></tr>
+    <tr><td>Find tools</td><td>"Please search/install relevant skills or GitHub repos"</td></tr>
+    <tr><td>Install GitHub repos</td><td>Give Claude repo URL — it clones and configures</td></tr>
+    <tr><td>Install Skills</td><td>Give Claude skills repo URL — extends capabilities</td></tr>
+    <tr><td>Troubleshooting</td><td>Just tell Claude — you don't need to know how to code</td></tr>
+    <tr><td>View .md files</td><td>VS Code (<code>Cmd+Shift+V</code>) / Spacebar Quick Look / Typora</td></tr>
+    <tr><td>LaTeX assignments</td><td>Claude writes <code>.tex</code> → texpage.com → download PDF</td></tr>
+    <tr><td>HTML presentations</td><td>"Output a single HTML file with all CSS and JS inline"</td></tr>
+    <tr><td>Python charts</td><td>Claude writes <code>.py</code> → Terminal <code>python3</code> run</td></tr>
+    <tr><td>Plan Mode</td><td>Review plan first, then execute = safe + controlled</td></tr>
+  </table>
+
+  <h3>10.2 Handy Prompt Templates (Copy & Adapt)</h3>
+
+  <h4>📝 Assignment Writing</h4>
+  <pre><code>Please help me write a course assignment on [topic] with these requirements:
+- Approximately [XXX] words
+- Include abstract, introduction, body (3 sections), and conclusion
+- Cite [X] references
+- Output as LaTeX format (.tex file)</code></pre>
+
+  <h4>📊 Data Analysis</h4>
+  <pre><code>Please analyze this dataset [@data-file.csv] with these requirements:
+- First clean the data using Python
+- Identify key trends
+- Draw 3 relevant charts
+- Write an analysis summary
+If any tools are missing, please search for and install them automatically</code></pre>
+
+  <h4>🐛 Code Debugging</h4>
+  <pre><code>This code [@code-file] threw an error when running. Here's the error:
+[paste error message]
+Please find the issue and fix it</code></pre>
+
+  <h4>🎨 Report Generation</h4>
+  <pre><code>Please generate a complete lab report based on [@experiment-data]:
+- LaTeX format
+- Include purpose, methods, results, and discussion
+- Data charts using Python matplotlib (provide code as well)
+- Embed chart images in the LaTeX document</code></pre>
+
+  <h4>🌐 Presentation Document</h4>
+  <pre><code>Please generate a classroom presentation document:
+- Output a single HTML file with all CSS and JS inline, zero external dependencies
+- Topic: [your subject]
+- 8-10 slides with keyboard navigation
+- Style: clean and modern, suitable for projector display
+- If formulas, use MathJax (inlined)</code></pre>
+
+  <hr>
+
+  <h3>🎓 One Last Thing</h3>
+  <p>Claude Code is like <strong>a TA with infinite patience</strong> — you can ask it anything, have it do anything for you, and even talk to yourself through it to clarify your thoughts.</p>
+  <p>It might feel a bit disorienting at first, but after using it a few times, you'll discover: <strong>homework can actually be this easy!</strong></p>
+  <blockquote><p>💬 <strong>Don't forget the most important principle</strong>: <strong>Clearly state what you want, and let Claude figure out the rest.</strong> Don't have the right tool? Let it install one. Don't have the knowledge? Let it look it up. Your job is just to be the "person who asks the questions."</p></blockquote>
+  <p>Happy Coding! 🎉</p>
+  <hr>
+  <p><small><em>This document was generated by Claude Code · June 2026</em></small></p>
+</main>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+(function() {
+  const sidebar = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const menuBtn = document.getElementById('menu-btn');
+  const themeBtn = document.getElementById('theme-btn');
+  const backToTop = document.getElementById('back-to-top');
+  const progressBar = document.getElementById('progress-bar');
+  const navLinks = document.querySelectorAll('#sidebar nav a');
+
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const savedTheme = localStorage.getItem('claude-guide-en-theme');
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.body.classList.add('dark');
+    themeBtn.textContent = '☀️';
+  }
+
+  themeBtn.addEventListener('click', function() {
+    const isDark = document.body.classList.toggle('dark');
+    themeBtn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('claude-guide-en-theme', isDark ? 'dark' : 'light');
+  });
+
+  menuBtn.addEventListener('click', function() {
+    sidebar.classList.toggle('open');
+    main.classList.toggle('expanded');
+  });
+
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('open');
+        main.classList.add('expanded');
+      }
+    });
+  });
+
+  const sectionIds = [];
+  navLinks.forEach(function(link) { sectionIds.push(link.getAttribute('href').substring(1)); });
+
+  function updateActiveLink() {
+    let current = '';
+    const scrollY = window.scrollY + 120;
+    for (let i = 0; i < sectionIds.length; i++) {
+      const el = document.getElementById(sectionIds[i]);
+      if (el && el.offsetTop <= scrollY) current = sectionIds[i];
+    }
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  }
+
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = Math.min(progress, 100) + '%';
+  }
+
+  function updateBackToTop() {
+    if (window.scrollY > 500) { backToTop.classList.add('visible'); }
+    else { backToTop.classList.remove('visible'); }
+  }
+
+  backToTop.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() { updateActiveLink(); updateProgress(); updateBackToTop(); ticking = false; });
+      ticking = true;
+    }
+  });
+
+  document.querySelectorAll('pre').forEach(function(pre) {
+    const code = pre.querySelector('code');
+    if (!code) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function() {
+      navigator.clipboard.writeText(code.innerText).then(function() {
+        btn.textContent = 'Copied ✓'; btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      }).catch(function() {
+        const ta = document.createElement('textarea');
+        ta.value = code.innerText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        btn.textContent = 'Copied ✓'; btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'T') { e.preventDefault(); themeBtn.click(); }
+    if (e.key === 't' && !e.target.closest('input, textarea, [contenteditable]') && !e.metaKey && !e.ctrlKey) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  updateActiveLink(); updateProgress(); updateBackToTop();
+  console.log('🚀 Claude Code Beginner\'s Guide ready');
+  console.log('💡 Shortcuts: Cmd/Ctrl+Shift+T toggle theme | T back to top');
+})();
+</script>
+
+</body>
+</html>
