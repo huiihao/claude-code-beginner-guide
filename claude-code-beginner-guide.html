@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Claude Code 新手入门指南</title>
+<style>
+  /* ========== CSS Reset & Variables ========== */
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text: #1a1a2e;
+    --text-secondary: #555;
+    --accent: #d97706;
+    --accent-light: #fef3c7;
+    --border: #e5e7eb;
+    --code-bg: #f1f5f9;
+    --code-text: #1e293b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.1);
+    --sidebar-bg: #fafbfc;
+    --table-stripe: #f8fafc;
+    --tip-bg: #eff6ff;
+    --tip-border: #93c5fd;
+    --warn-bg: #fef9c3;
+    --warn-border: #fde047;
+    --success-bg: #f0fdf4;
+    --success-border: #86efac;
+    --radius: 8px;
+    --transition: 0.2s ease;
+  }
+
+  .dark {
+    --bg: #0f172a;
+    --bg-secondary: #1e293b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --accent: #f59e0b;
+    --accent-light: #422006;
+    --border: #334155;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-lg: 0 4px 14px rgba(0,0,0,0.4);
+    --sidebar-bg: #1a1f2e;
+    --table-stripe: #1a2332;
+    --tip-bg: #172554;
+    --tip-border: #1d4ed8;
+    --warn-bg: #422006;
+    --warn-border: #a16207;
+    --success-bg: #052e16;
+    --success-border: #166534;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  /* ========== Layout ========== */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ========== Sidebar ========== */
+  #sidebar {
+    width: 260px;
+    min-width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform var(--transition), background var(--transition);
+    padding: 20px 0;
+  }
+
+  #sidebar.hidden { transform: translateX(-100%); }
+
+  #sidebar-header {
+    padding: 0 20px 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  #sidebar-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  #sidebar nav { padding: 0 12px; }
+
+  #sidebar nav a {
+    display: block;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all var(--transition);
+    margin-bottom: 1px;
+  }
+
+  #sidebar nav a:hover,
+  #sidebar nav a.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ========== Main Content ========== */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    max-width: 860px;
+    padding: 32px 48px 80px;
+    transition: margin var(--transition);
+  }
+
+  #main.expanded { margin-left: 0; }
+
+  /* ========== Top Bar ========== */
+  #topbar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    transition: background var(--transition);
+  }
+
+  #menu-btn, #theme-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    transition: all var(--transition);
+  }
+
+  #menu-btn:hover, #theme-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent);
+  }
+
+  #topbar h1 { font-size: 1.15rem; font-weight: 700; flex: 1; }
+
+  /* ========== Typography ========== */
+  h2 {
+    font-size: 1.65rem;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    margin: 32px 0 12px;
+    color: var(--text);
+  }
+
+  h4 {
+    font-size: 1.05rem;
+    margin: 24px 0 8px;
+    color: var(--text);
+  }
+
+  p { margin: 10px 0; color: var(--text-secondary); }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  strong { color: var(--text); }
+
+  blockquote {
+    border-left: 4px solid var(--accent);
+    padding: 8px 16px;
+    margin: 16px 0;
+    background: var(--accent-light);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  blockquote p { margin: 4px 0; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* ========== Code ========== */
+  code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: all var(--transition);
+    opacity: 0;
+  }
+
+  pre:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .copy-btn.copied { background: #166534; color: #fff; border-color: #166534; }
+
+  /* ========== Tables ========== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--bg-secondary);
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  tr:nth-child(even) td { background: var(--table-stripe); }
+
+  /* ========== Callout Boxes ========== */
+  .callout {
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    font-size: 0.92rem;
+  }
+
+  .callout.tip {
+    background: var(--tip-bg);
+    border-left-color: var(--tip-border);
+  }
+
+  .callout.warn {
+    background: var(--warn-bg);
+    border-left-color: var(--warn-border);
+  }
+
+  .callout.success {
+    background: var(--success-bg);
+    border-left-color: var(--success-border);
+  }
+
+  /* ========== Back to Top ========== */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all var(--transition);
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  #back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  #back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+
+  /* ========== Progress Bar ========== */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent);
+    z-index: 300;
+    transition: width 0.1s linear;
+  }
+
+  /* ========== Responsive ========== */
+  @media (max-width: 900px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; padding: 20px 24px 60px; }
+    #main.expanded { margin-left: 0; }
+    #topbar h1 { font-size: 1rem; }
+    h2 { font-size: 1.35rem; }
+    pre { font-size: 0.78rem; padding: 12px 14px; }
+  }
+
+  /* ========== Print ========== */
+  @media print {
+    #sidebar, #topbar, #back-to-top, #progress-bar, .copy-btn { display: none; }
+    #main { margin-left: 0; max-width: 100%; padding: 0; }
+    body { font-size: 12px; }
+    pre { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <h2>📖 目录</h2>
+  </div>
+  <nav>
+    <a href="#section1">一、认识 Terminal（终端）</a>
+    <a href="#section2">二、启动 Claude Code</a>
+    <a href="#section3">三、让 AI 读你的文件</a>
+    <a href="#section4">四、核心技巧</a>
+    <a href="#section5">五、Markdown (.md) 文件</a>
+    <a href="#section6">六、输出 LaTeX 文档</a>
+    <a href="#section7">七、输出交互式 HTML</a>
+    <a href="#section8">八、用 Python 绘制数据图</a>
+    <a href="#section9">九、Plan Mode 说明</a>
+    <a href="#section10">十、总结与模板</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main id="main">
+
+  <!-- Top Bar -->
+  <div id="topbar">
+    <button id="menu-btn" title="切换目录" aria-label="切换目录">☰</button>
+    <h1>🚀 Claude Code 新手入门指南</h1>
+    <button id="theme-btn" title="切换深色模式" aria-label="切换深色模式">🌙</button>
+  </div>
+
+  <blockquote>
+    <p><em>——写给"什么都不懂"的大学生（但你其实很聪明！）</em></p>
+  </blockquote>
+
+  <hr>
+
+  <p>你好呀！如果你是第一次听说「Claude Code」、第一次打开「终端（Terminal）」、甚至第一次在电脑上敲命令，那这篇文章就是为你准备的。别紧张，跟着做一遍，你就能把它变成写作业、做项目、画图表的超级助手！</p>
+  <p>让我们从最最基础的地方开始 🐣</p>
+
+  <hr>
+
+  <!-- ==================== Section 1 ==================== -->
+  <h2 id="section1">一、准备工作：认识 Terminal（终端）</h2>
+
+  <h3>1.1 「终端」是什么？</h3>
+  <p>终端（Terminal）就是你跟电脑<strong>用文字对话的窗口</strong>。平时你用鼠标点点点，现在你只需要<strong>敲几个单词</strong>，电脑就能听懂并执行。是不是很酷？</p>
+
+  <h3>1.2 怎么打开它？</h3>
+  <p>在 Mac 上，最简单的方法是：</p>
+  <blockquote>
+    <p>🔍 按 <code>Command + 空格键</code>（Spotlight 搜索），输入 <strong><code>terminal</code></strong>，然后按回车。</p>
+  </blockquote>
+  <p>duang~ 一个黑底白字（也可能是白底黑字）的窗口就弹出来了。别被它吓到，它只是在等你说话。</p>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：如果你觉得默认的字体太小，可以按 <code>Command + +</code> 放大，<code>Command + -</code> 缩小。
+  </div>
+
+  <h3>1.3 你必须会的 6 条命令</h3>
+  <p>下面这些命令就像你在"文件管理器"里拖来拖去一样，只不过换成了文字。每条命令都遵循这个模式：</p>
+  <pre><code>命令 [选项] [目标]</code></pre>
+  <p>来，一条一条认识它们：</p>
+
+  <hr>
+
+  <h4>📂 <code>ls</code> — 看看这里有什么</h4>
+  <pre><code>ls</code></pre>
+  <p><strong>作用</strong>：列出当前文件夹里的所有文件和子文件夹。</p>
+  <table>
+    <tr><th>常用变体</th><th>含义</th></tr>
+    <tr><td><code>ls</code></td><td>列出当前目录的所有文件</td></tr>
+    <tr><td><code>ls -l</code></td><td>显示详细信息（大小、日期）</td></tr>
+    <tr><td><code>ls -a</code></td><td>包括隐藏文件（以 <code>.</code> 开头的）</td></tr>
+    <tr><td><code>ls -la</code></td><td>详细信息 + 隐藏文件，最常用！</td></tr>
+  </table>
+
+  <hr>
+
+  <h4>🚪 <code>cd</code> — 走进一个文件夹</h4>
+  <pre><code>cd 文件夹名</code></pre>
+  <p><strong>作用</strong>：切换当前所在的文件夹（就像双击进入一个文件夹）。</p>
+  <table>
+    <tr><th>常用写法</th><th>含义</th></tr>
+    <tr><td><code>cd Desktop</code></td><td>进入桌面</td></tr>
+    <tr><td><code>cd ..</code></td><td>返回上一层</td></tr>
+    <tr><td><code>cd ~</code></td><td>回到你的"家"目录（home）</td></tr>
+    <tr><td><code>cd /</code></td><td>去电脑的最顶层（根目录）</td></tr>
+  </table>
+
+  <blockquote>
+    <p>🧠 <strong>理解路径</strong>：</p>
+    <p><code>~</code> = <code>/Users/你的用户名</code>，也就是你的"家"</p>
+    <p><code>.</code> = 当前文件夹</p>
+    <p><code>..</code> = 上一层文件夹</p>
+    <p>就像你要去朋友家，"家 → 出小区 → 坐地铁 → 到站"一样，路径就是你的"地址"。</p>
+  </blockquote>
+
+  <hr>
+
+  <h4>📁 <code>mkdir</code> — 新建一个文件夹</h4>
+  <pre><code>mkdir 新文件夹的名字
+mkdir 作业文件夹</code></pre>
+  <p>执行后，当前目录就会出现一个叫「作业文件夹」的新文件夹。</p>
+
+  <hr>
+
+  <h4>📝 <code>cp</code> — 复制文件</h4>
+  <pre><code>cp 源文件 目标位置
+cp 报告.txt ~/Desktop/</code></pre>
+  <p>↑ 把「报告.txt」复制到桌面。</p>
+  <table>
+    <tr><th>常用变体</th><th>含义</th></tr>
+    <tr><td><code>cp -r 文件夹 目标</code></td><td>复制整个文件夹（<code>-r</code> = 递归）</td></tr>
+  </table>
+
+  <hr>
+
+  <h4>🚚 <code>mv</code> — 移动 / 重命名</h4>
+  <pre><code>mv 源文件 目标位置</code></pre>
+  <p><strong>双重身份</strong>：</p>
+  <p>如果目标是另一个目录 → 移动<br>如果目标是一个新名字 → 重命名</p>
+  <pre><code>mv 报告.txt ~/Documents/     # 移动到「文稿」文件夹
+mv 旧名字.txt 新名字.txt     # 重命名</code></pre>
+
+  <hr>
+
+  <h4>🗑️ <code>rm</code> — 删除文件</h4>
+  <pre><code>rm 文件名</code></pre>
+  <div class="callout warn">
+    <strong>⚠️ 注意！</strong> 终端里删掉的文件不经过废纸篓，删了就真没了！下手前先确认！！
+  </div>
+  <pre><code>rm 没用的草稿.txt            # 删一个文件
+rm -r 整个文件夹/             # 删一个文件夹（慎重！）
+rm -rf 整个文件夹/            # 强制删除（更慎重！！）</code></pre>
+
+  <hr>
+
+  <div class="callout success">
+    <strong>✅ 小测试</strong><br><br>
+    打开你的 Terminal，试试这个练习：
+    <pre><code>cd ~/Desktop              # 去桌面
+mkdir claude-test         # 建一个叫 claude-test 的文件夹
+cd claude-test            # 进去
+ls                        # 看看里面有什么（应该是空的）
+cd ..                     # 回到桌面
+rm -r claude-test         # 删掉测试文件夹</code></pre>
+    如果顺利走完，恭喜你，你已经会终端的基础操作啦！🎉
+  </div>
+
+  <h3>1.4 理解 Mac 上的文件路径（中文系统 ≠ 中文路径）</h3>
+  <p>你的 Mac 操作系统可能是中文的，Finder 里看到的文件夹名字也是中文的——「桌面」「下载」「文稿」「图片」……但！在 Terminal 里，<strong>它们叫的是英文名字</strong>：</p>
+
+  <table>
+    <tr><th>Finder 里看到的中文名</th><th>Terminal 里的英文路径</th><th>完整路径</th></tr>
+    <tr><td>桌面</td><td><code>Desktop</code></td><td><code>~/Desktop</code> 或 <code>/Users/你的用户名/Desktop</code></td></tr>
+    <tr><td>下载</td><td><code>Downloads</code></td><td><code>~/Downloads</code></td></tr>
+    <tr><td>文稿</td><td><code>Documents</code></td><td><code>~/Documents</code></td></tr>
+    <tr><td>图片</td><td><code>Pictures</code></td><td><code>~/Pictures</code></td></tr>
+    <tr><td>音乐</td><td><code>Music</code></td><td><code>~/Music</code></td></tr>
+    <tr><td>影片</td><td><code>Movies</code></td><td><code>~/Movies</code></td></tr>
+    <tr><td>应用程序</td><td><code>Applications</code></td><td><code>/Applications</code></td></tr>
+  </table>
+
+  <blockquote>
+    <p>🧠 <strong>记住这个规则</strong>：你在 Finder 里看到的是「替身」（显示名），Terminal 认的才是「真名」（路径名）。<strong>路径永远用英文</strong>。</p>
+  </blockquote>
+
+  <h4>路径里的 <code>/</code> 是什么意思？</h4>
+  <p><code>/</code> 就像文件夹之间的「分隔符」，和网址里的 <code>/</code> 是一个道理：</p>
+  <pre><code>~/Downloads/test</code></pre>
+  <p>翻译成人话：<strong>「家 → 下载 → test（文件夹或文件）」</strong></p>
+  <ul>
+    <li><code>test</code> 可能是<strong>文件夹</strong>，也可能是<strong>文件</strong>——光看路径没法区分，用 <code>ls</code> 看一眼就知道了</li>
+    <li>如果有后缀（比如 <code>test.txt</code>、<code>test.py</code>、<code>test.html</code>），那八九不离十是个文件</li>
+  </ul>
+
+  <h4>路径命名小技巧</h4>
+  <p>给文件和文件夹起名字的时候，尽量：</p>
+  <ul>
+    <li>❌ 不要用中文（有些工具会翻车）</li>
+    <li>❌ 不要带空格（<code>我的 作业.txt</code> → Terminal 里要写成 <code>我的\ 作业.txt</code> 或者加引号）</li>
+    <li>✅ 用英文 + 下划线/连字符（比如 <code>homework_1.txt</code>、<code>course-project</code>）</li>
+  </ul>
+
+  <h3>1.5 好习惯：一个项目，一个文件夹</h3>
+  <p>在开始用 Claude Code 做某个课程作业之前，强烈建议你养成这个习惯：</p>
+  <pre><code># 第 1 步：给每个课程/项目建一个专属文件夹
+mkdir ~/Desktop/数字信号处理作业
+
+# 第 2 步：cd 进去
+cd ~/Desktop/数字信号处理作业
+
+# 第 3 步：在这个文件夹里启动 Claude
+claude</code></pre>
+
+  <p><strong>为什么要这样做？</strong> 🎯</p>
+  <ul>
+    <li>Claude 的「视野」以你启动它时所在的文件夹为中心——它更容易看到这个文件夹里的文件</li>
+    <li>不会跟其他课程的文件搞混</li>
+    <li>聊天的上下文（历史记录）跟项目绑定，下次回来继续聊更清楚</li>
+    <li>以后找文件也方便，不会满桌面都是乱七八糟的文件</li>
+  </ul>
+
+  <div class="callout tip">
+    <strong>💡 进阶小贴士</strong>：如果你想把某个文件夹里已有的文件交给 Claude 看，用第三节讲的 <code>@</code> 符号就行。
+  </div>
+
+  <!-- ==================== Section 2 ==================== -->
+  <h2 id="section2">二、启动 Claude Code</h2>
+
+  <h3>2.1 确认已安装 Claude Code</h3>
+  <p>在 Terminal 里输入：</p>
+  <pre><code>claude --version</code></pre>
+  <p>如果显示版本号（比如 <code>v1.0.x</code>），说明已经装好了。跳去 2.3。</p>
+  <p>如果提示 <code>command not found: claude</code>，跟着 2.2 来装。</p>
+
+  <h3>2.2 安装 Claude Code</h3>
+  <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+  <blockquote>
+    <p>如果提示 <code>npm: command not found</code>，说明你的 Mac 还没装 Node.js。别急，最简单的办法是：</p>
+    <ol>
+      <li>打开 <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a></li>
+      <li>下载左边那个 <strong>LTS</strong> 版本（就是推荐给大多数用户的那个）</li>
+      <li>双击 <code>.pkg</code> 文件安装，一路"继续"</li>
+      <li>装好后<strong>关掉 Terminal 重新打开</strong></li>
+      <li>再试 <code>npm install -g @anthropic-ai/claude-code</code></li>
+    </ol>
+  </blockquote>
+
+  <h3>2.3 启动！</h3>
+  <pre><code>claude</code></pre>
+  <p>回车之后，<strong>第一次使用</strong>会弹出浏览器让你登录 Anthropic 账号。照提示操作就行（可以用 Google 账号登录）。</p>
+  <p>登录成功后回到 Terminal，你会看到类似这样的界面：</p>
+  <pre><code>┌─────────────────────────────────────────────┐
+│  Claude Code v1.x.x                         │
+│  Type /help for available commands          │
+│                                             │
+│  >                                           │
+└─────────────────────────────────────────────┘</code></pre>
+  <p>那个 <code>&gt;</code> 就是在等你说话的地方，你可以直接输入中文跟 Claude 聊天！比如：</p>
+  <pre><code>帮我写一份课程作业的提纲</code></pre>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：如果哪天你想退出 Claude Code，输入 <code>/exit</code> 或者按 <code>Ctrl + C</code> 几次就行。
+  </div>
+
+  <h3>2.4 如何退出 Claude Code</h3>
+  <p>有几种方式可以结束对话：</p>
+  <table>
+    <tr><th>方式</th><th>操作</th><th>效果</th></tr>
+    <tr><td>礼貌退场</td><td>输入 <code>/exit</code></td><td>优雅退出，对话历史保留</td></tr>
+    <tr><td>强退</td><td>按 <code>Ctrl + C</code> <strong>两次</strong></td><td>相当于"我不聊了，走人"，对话历史也会保留</td></tr>
+    <tr><td>一次 Ctrl+C</td><td>按一下</td><td>只是打断当前正在进行的操作，不会退出</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>💡 建议</strong>：习惯用 <strong>双击 <code>Ctrl + C</code></strong> 退出，简单快捷。退出后你回到 Terminal 的黑窗口，可以接着输入别的命令。
+  </div>
+
+  <h3>2.5 重新进入之前的对话（网页端历史对话）</h3>
+  <p>你某天聊了一半退出了，第二天想继续聊？用这个：</p>
+  <pre><code># 先 cd 到你的项目文件夹
+cd ~/Desktop/数字信号处理作业
+
+# 然后启动 Claude
+claude
+
+# 在 Claude Code 的输入框里输入：
+/resume</code></pre>
+
+  <p><strong><code>/resume</code></strong> 会列出一个历史对话列表，你可以用上下箭头选择之前的对话，按回车继续聊！</p>
+  <p>就像微信的聊天记录一样——上次聊到哪，这次接着聊，Claude 还记得你们之前说过什么。</p>
+
+  <div class="callout tip">
+    <strong>💡 注意</strong>：<code>/resume</code> 显示的是你在这个<strong>文件夹</strong>里启动过的对话。所以 1.5 小节说的「一个项目一个文件夹」的好习惯在这里又用上了——不同课程项目的对话不会混在一起。
+  </div>
+
+  <h3>2.6 常用的 Claude Code 内置命令</h3>
+  <p>在 Claude Code 的输入框里，以 <code>/</code> 开头的都是内置命令。下面是最常用的几个：</p>
+  <table>
+    <tr><th>命令</th><th>作用</th><th>什么时候用</th></tr>
+    <tr><td><code>/help</code></td><td>查看所有可用命令</td><td>忘了命令的时候</td></tr>
+    <tr><td><code>/exit</code></td><td>退出 Claude Code</td><td>聊完了，走人</td></tr>
+    <tr><td><code>/resume</code></td><td>查看并恢复历史对话</td><td>继续上次没聊完的</td></tr>
+    <tr><td><code>/clear</code></td><td>清空当前对话上下文</td><td>话题跑偏了，想重新来过</td></tr>
+    <tr><td><code>/cost</code></td><td>查看本轮对话消耗的 token</td><td>想知道花了多少额度</td></tr>
+    <tr><td><code>/status</code></td><td>查看当前会话状态</td><td>看看 Claude 在干嘛</td></tr>
+    <tr><td><code>/add-dir</code></td><td>添加文件夹到 Claude 的视野</td><td>让它看到更多文件</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>💡</strong> 你可以随时输入 <code>/help</code> 获取最新的命令列表。
+  </div>
+
+  <h3>2.7 遇到任何问题？直接告诉 Claude！</h3>
+  <p>这是最重要的一条原则——<strong>你不需要真的会写代码，你只需要会"告诉 Claude 发生了什么"</strong>。</p>
+
+  <table>
+    <tr><th>你遇到的情况</th><th>你直接对 Claude 说</th><th>Claude 会</th></tr>
+    <tr><td>运行报错了</td><td>"这段代码报错了：<code>[粘贴错误]</code>，请帮我修"</td><td>诊断错误并修复</td></tr>
+    <tr><td>想装某个工具</td><td>"我想用 ffmpeg 处理视频，但我没装，请帮我装"</td><td>搜索并安装</td></tr>
+    <tr><td>不知道怎么做某件事</td><td>"我想把 CSV 数据画成图表，我完全不会，请一步步教我"</td><td>写代码 + 解释</td></tr>
+    <tr><td>代码跑得太慢</td><td>"这个程序跑得太慢了，能帮我优化吗？"</td><td>分析并优化</td></tr>
+    <tr><td>心情不好 😤</td><td>"这破代码怎么都调不通，我要崩溃了"</td><td>安慰你 + 帮你调</td></tr>
+  </table>
+
+  <blockquote>
+    <p>🎯 <strong>记住</strong>：Claude Code 不仅仅是写代码的工具，它就像坐在你旁边的<strong>全能助教</strong>——能帮你装东西、改错误、解释概念、甚至听你吐槽。你只管把问题描述清楚，<strong>不需要你真的会写代码</strong>。</p>
+  </blockquote>
+
+  <h3>2.8 写错了 / 按错了？别慌——ESC 是你的「后悔药」</h3>
+  <p>在用 Claude Code 的时候，你可能会遇到这些尴尬时刻：</p>
+
+  <table>
+    <tr><th>场景</th><th>你的内心 OS</th></tr>
+    <tr><td>打了一长串话，发现写得不好</td><td>"完了，能不能撤回……"</td></tr>
+    <tr><td>还没打完，不小心按了 Enter 发出去了</td><td>"等下我还没说完！！"</td></tr>
+    <tr><td>Claude 开始回答了，但你突然想改需求</td><td>"不对不对，我不是这个意思！"</td></tr>
+    <tr><td>觉得这次的回答不满意，想回到之前重来</td><td>"这答得不行，我想倒回去……"</td></tr>
+  </table>
+
+  <p><strong>解决方法超级简单——按一下 <code>ESC</code> 键！</strong></p>
+
+  <table>
+    <tr><th>操作</th><th>效果</th></tr>
+    <tr><td>按 <strong>1 次 <code>ESC</code></strong></td><td>🛑 中断当前对话 / 打断 Claude 正在说的话</td></tr>
+    <tr><td>按 <strong>多次 <code>ESC</code></strong></td><td>⏪ 弹出「回退到哪一步」的选择框，可以一步步倒退到之前的对话节点</td></tr>
+  </table>
+
+  <blockquote>
+    <p>🎮 你可以把 <code>ESC</code> 理解成<strong>游戏里的「暂停 + 读档」按钮</strong>：</p>
+    <ul>
+      <li>按一下 → 暂停当前回合</li>
+      <li>多按几下 → 弹出存档列表，选一个回去</li>
+    </ul>
+    <p>这样你永远不用害怕「说错话」——反正能撤回！</p>
+  </blockquote>
+
+  <h3>2.9 Claude Code 实用快捷键速查</h3>
+
+  <h4>Claude Code 专属快捷键</h4>
+  <table>
+    <tr><th>快捷键</th><th>作用</th><th>使用场景</th></tr>
+    <tr><td><code>ESC</code></td><td>中断 / 回退对话</td><td>写错了、不满意、想回到之前</td></tr>
+    <tr><td><code>Alt + Enter</code></td><td>换行（不发送）</td><td>写多行内容时，按 Enter 不会发送，另起一行继续写</td></tr>
+    <tr><td><code>Alt + V</code></td><td>粘贴图片</td><td>把截图粘贴到对话里让 Claude 看（比描述一万句都强！）</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>📸 关于粘贴图片</strong>：如果代码报错了，直接截个图 <code>Alt+V</code> 贴进去，比手动复制错误信息快多了。Claude 能「看」懂图片里的内容。
+  </div>
+
+  <h4>Terminal 通用快捷键（在 Claude Code 里也能用）</h4>
+
+  <div class="callout warn">
+    <strong>⚠️ Mac 和 Windows 快捷键不同！</strong> 下面列出的是 <strong>Mac</strong> 上的快捷键。如果你用的是 Windows，<code>Cmd</code> 换成 <code>Ctrl</code> 就行（除了 <code>Ctrl+U/A/E/W</code> 这类控制键，它们在两个平台都一样）。
+  </div>
+
+  <table>
+    <tr><th>快捷键 (Mac)</th><th>快捷键 (Windows)</th><th>作用</th><th>使用场景</th></tr>
+    <tr><td><code>Cmd + C</code></td><td><code>Ctrl + C</code></td><td>复制选中文本</td><td>—</td></tr>
+    <tr><td><code>Cmd + V</code></td><td><code>Ctrl + V</code></td><td>粘贴文本</td><td>—</td></tr>
+    <tr><td><code>Ctrl + U</code></td><td>同左</td><td>快速删除当前行</td><td>打的字全不要了，一秒清空</td></tr>
+    <tr><td><code>Ctrl + A</code></td><td>同左</td><td>跳到行首</td><td>想在开头加东西</td></tr>
+    <tr><td><code>Ctrl + E</code></td><td>同左</td><td>跳到行尾</td><td>想在末尾继续写</td></tr>
+    <tr><td><code>Ctrl + W</code></td><td>同左</td><td>删除前一个单词</td><td>快速删掉刚才打错的一个词</td></tr>
+    <tr><td><code>Ctrl + K</code></td><td>同左</td><td>删除光标到行尾</td><td>删掉后半行</td></tr>
+    <tr><td><code>Ctrl + Y</code></td><td>同左</td><td>粘贴刚才删除的内容</td><td>"咦，删多了，还给我！"</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：<code>Ctrl + U</code> 简直是救命快捷键——当你打了一大堆指令发现全错了，不用狂按退格键，直接 <code>Ctrl + U</code> 一秒清空！
+  </div>
+
+  <div class="callout warn">
+    <strong>🍎 Mac 用户特别注意</strong>：在 Mac Terminal 里，<code>Ctrl + C</code> 是<strong>中断进程</strong>（不是复制！）——这也是为什么 2.4 小节说用 <code>Ctrl + C</code> 两次退出 Claude。复制粘贴请用 <code>Cmd + C</code> / <code>Cmd + V</code>。
+  </div>
+
+  <!-- ==================== Section 3 ==================== -->
+  <h2 id="section3">三、让 AI 读你的文件</h2>
+
+  <p>Claude 很聪明，但它不会"自动看到"你电脑上的文件。你需要<strong>手动告诉它</strong>要读哪些。</p>
+
+  <h3>3.1 操作步骤（超级简单）</h3>
+  <ol>
+    <li>在 Claude Code 的输入框里，先<strong>敲一个空格</strong></li>
+    <li>然后输入 <strong><code>@</code></strong>（就是 shift+2 那个符号）</li>
+    <li>屏幕下方会弹出一个文件列表，用<strong>上下箭头键</strong>选择文件</li>
+    <li>按<strong>回车</strong>选中</li>
+  </ol>
+
+  <p>就像这样：</p>
+  <pre><code>> 请帮我检查这段代码有什么问题</code></pre>
+  <p>（输入空格 + @ 后，弹出文件选择器）</p>
+  <pre><code>> 请帮我检查这段代码有什么问题 @作业1.cpp</code></pre>
+
+  <h3>3.2 可以选多个文件</h3>
+  <p>在输入 <code>@</code> 之后，你可以重复这个操作，选择多个文件一起给 Claude 看。比如：</p>
+  <pre><code>> 请帮我分析 @src/main.py 和 @src/utils.py 之间的关系</code></pre>
+
+  <h3>3.3 为什么要先让 Claude 读文件？</h3>
+  <p>举个栗子 🌰：你不能对一个没看过你论文的人说"帮我改一下第三章"。同样的道理，Claude 需要<strong>先看到你的文件内容</strong>，才能给你有用的建议。</p>
+
+  <div class="callout tip">
+    <strong>💡 还记得吗？</strong> 如果你忘了要读的文件在哪个文件夹，先用 <code>ls</code> 和 <code>cd</code> 在 Terminal 里逛一圈，找到目标文件，记下路径和名字，再去 Claude Code 里引用它。
+  </div>
+
+  <!-- ==================== Section 4 ==================== -->
+  <h2 id="section4">四、让 Claude 帮你做事的核心技巧</h2>
+
+  <h3>4.1 魔法咒语 🔮</h3>
+  <p>你的电脑可能没装什么特别的软件——这很正常！Claude 可以帮你<strong>自动搜索、安装、调用</strong>需要的工具。你只需要在提示词里加上类似的话：</p>
+  <blockquote>
+    <p><strong>"请搜索/调用/安装相关的 skills 或 GitHub 仓库来完成这个任务"</strong></p>
+  </blockquote>
+
+  <h3>4.2 举个例子</h3>
+  <p>❌ <strong>不够好的说法</strong>：</p>
+  <pre><code>帮我画一个数据图</code></pre>
+  <p>✅ <strong>更好的说法</strong>：</p>
+  <pre><code>帮我用 Python 的 matplotlib 画一个数据图。如果没有安装 matplotlib，请先帮我安装。
+如果缺少合适的 skills，请搜索并调用相关的 MCP 工具或 GitHub 仓库来完成。</code></pre>
+
+  <h3>4.3 Claude 能帮你做的事</h3>
+  <table>
+    <tr><th>你需要的</th><th>你可以说</th></tr>
+    <tr><td>安装 Python 包</td><td>"请先安装 xxx，再写代码"</td></tr>
+    <tr><td>下载 GitHub 项目</td><td>"请从 GitHub 上 clone xxx 仓库"</td></tr>
+    <tr><td>调用特定工具</td><td>"请安装并使用 pandoc 把文件转成 PDF"</td></tr>
+    <tr><td>搜索已有轮子</td><td>"请搜索有没有现成的库可以处理这个任务"</td></tr>
+  </table>
+
+  <h3>4.4 让 Claude 安装 GitHub 仓库</h3>
+  <p>有时候你想要的工具不是 <code>pip install</code> 就能装的——它可能是一个 GitHub 上的开源项目。别担心，Claude 照样能帮你搞定！</p>
+
+  <h4>案例：安装 claude-hud（一个 Claude Code 的增强界面插件）</h4>
+  <pre><code>请帮我从 https://github.com/jarrodwatts/claude-hud 安装这个工具。
+请帮我完成以下步骤：
+1. clone 这个仓库到本地
+2. 按照它的 README 说明安装依赖
+3. 配置好让它能在 Claude Code 中使用</code></pre>
+  <p>Claude 会自己去看那个仓库的 README，搞清楚安装方法，然后一步步帮你弄好——你不需要自己去读文档。</p>
+
+  <blockquote>
+    <p>🎯 <strong>通用模板</strong>：</p>
+    <pre><code>请帮我安装这个 GitHub 仓库：[粘贴仓库地址]
+如果需要额外安装依赖，请一并帮我装好。</code></pre>
+  </blockquote>
+
+  <h3>4.5 让 Claude 安装 Skills</h3>
+  <p>Skills（技能）是 Claude Code 的「插件」，安装之后 Claude 就多了对应的能力。</p>
+
+  <h4>案例：安装 Anthropic 官方 Skills 集合</h4>
+  <pre><code>请帮我从 https://github.com/anthropics/skills 安装这些 skills。
+请按照仓库的说明，把所有可用的 skills 配置到我的 Claude Code 中。</code></pre>
+  <p>安装完成后，Claude 就能使用这些 skill 来处理更复杂的任务了。</p>
+
+  <blockquote>
+    <p>💡 <strong>什么是 Skills？</strong> 可以把它们想象成给 Claude 安装的「专业培训」——没装之前 Claude 什么都会一点，装了对应的 skill 之后它在某个领域就更专业了。</p>
+  </blockquote>
+
+  <div class="callout tip">
+    <strong>💡 核心思路</strong>：不要假设 Claude "可能做不到"。你只管把需求说清楚，工具的事让它自己想办法！
+  </div>
+
+  <!-- ==================== Section 5 ==================== -->
+  <h2 id="section5">五、关于 .md 文件（Markdown）——用啥软件打开？</h2>
+
+  <h3>5.1 什么是 Markdown？</h3>
+  <p>Markdown（简称 <code>.md</code>）是一种<strong>超级简单的排版语言</strong>。你不用像 Word 那样用鼠标点"加粗"、"标题"按钮，只需要在文字前后加几个符号就行。</p>
+  <p>比如你看到的本文档，就是 Markdown 写的！对比一下：</p>
+
+  <table>
+    <tr><th>你想要的效果</th><th>Markdown 写法</th><th>最终显示</th></tr>
+    <tr><td>大标题</td><td><code># 这是大标题</code></td><td>又大又粗的标题</td></tr>
+    <tr><td>二级标题</td><td><code>## 这是二级标题</code></td><td>稍小的标题</td></tr>
+    <tr><td>加粗</td><td><code>**加粗的文字**</code></td><td><strong>加粗的文字</strong></td></tr>
+    <tr><td>斜体</td><td><code>*斜体*</code></td><td><em>斜体</em></td></tr>
+    <tr><td>列表</td><td><code>- 项目一</code></td><td>• 项目一</td></tr>
+    <tr><td>链接</td><td><code>[文字](网址)</code></td><td>可点击的超链接</td></tr>
+    <tr><td>代码</td><td><code>`代码片段`</code></td><td><code>代码片段</code></td></tr>
+    <tr><td>代码块</td><td><code>``` 代码 ```</code></td><td>带高亮的代码框</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>🎯 重点</strong>：Claude Code 输出的内容很多时候就是 Markdown 格式！所以你需要知道怎么查看它。
+  </div>
+
+  <h3>5.2 用什么软件打开 .md 文件？</h3>
+  <p>你的 Mac 上有好几种方式可以查看 Markdown 文件，从简单到专业：</p>
+
+  <h4>🌟 方案一（推荐）：Visual Studio Code（VS Code）</h4>
+  <p>这是程序员最爱用的编辑器，<strong>免费又好用</strong>。</p>
+  <ol>
+    <li>去 <a href="https://code.visualstudio.com" target="_blank" rel="noopener">code.visualstudio.com</a> 下载安装</li>
+    <li>用 VS Code 打开 <code>.md</code> 文件</li>
+    <li>按 <code>Command + Shift + V</code> → <strong>右边会弹出实时预览窗口</strong>，左边是源码，右边是排版效果</li>
+  </ol>
+  <div class="callout success"><strong>✅ 优点</strong>：免费、功能强大、有侧边栏预览、还能顺便编辑代码</div>
+
+  <h4>📝 方案二（最简单）：Mac 自带的「快速查看」</h4>
+  <p><strong>不需要装任何软件！</strong></p>
+  <ol>
+    <li>在 Finder（访达）里找到 <code>.md</code> 文件</li>
+    <li><strong>选中文件</strong> → 按一下<strong>空格键</strong></li>
+    <li>弹出一个预览窗口，就能看到排版后的效果了</li>
+  </ol>
+  <div class="callout success"><strong>✅ 优点</strong>：零安装、速度最快</div>
+  <div class="callout warn"><strong>⚠️ 缺点</strong>：只能看不能编辑，有些复杂格式显示不太好</div>
+
+  <h4>🖊️ 方案三：Mac 自带的「文本编辑」</h4>
+  <ol>
+    <li>双击 <code>.md</code> 文件，用「文本编辑」打开</li>
+    <li>你会看到 Markdown 的<strong>源代码</strong>（带 <code>#</code> <code>*</code> 等符号的那种）</li>
+    <li>可以编辑文字</li>
+  </ol>
+  <div class="callout warn"><strong>⚠️</strong> 「文本编辑」不会渲染 Markdown 效果，你看到的是"源码"。但改文字没问题。</div>
+
+  <h4>🎨 方案四（最漂亮）：Typora</h4>
+  <p>如果你想让 Markdown 看起来就像 Word 一样美观：</p>
+  <ol>
+    <li>去 <a href="https://typora.io" target="_blank" rel="noopener">typora.io</a> 下载</li>
+    <li>用 Typora 打开 <code>.md</code> 文件</li>
+    <li><strong>所见即所得</strong>——你打字的时候它直接显示效果，不用切换预览</li>
+  </ol>
+  <div class="callout success"><strong>✅ 优点</strong>：界面极简、所见即所得、导出 PDF/HTML 方便</div>
+  <div class="callout warn"><strong>⚠️ 缺点</strong>：正式版需要付费（约 $15），但可以一直用试用版</div>
+
+  <h3>5.3 快速对比</h3>
+  <table>
+    <tr><th>软件</th><th>费用</th><th>预览方式</th><th>适合谁</th></tr>
+    <tr><td><strong>快速查看</strong>（空格键）</td><td>免费</td><td>按空格预览</td><td>只想瞄一眼</td></tr>
+    <tr><td><strong>文本编辑</strong></td><td>免费</td><td>无预览</td><td>简单改几个字</td></tr>
+    <tr><td><strong>VS Code</strong></td><td>免费</td><td><code>Cmd+Shift+V</code> 侧边预览</td><td>🔥 <strong>最推荐</strong></td></tr>
+    <tr><td><strong>Typora</strong></td><td>付费</td><td>所见即所得</td><td>经常写文档</td></tr>
+  </table>
+
+  <h3>5.4 Claude 输出 Markdown 时你该怎么做</h3>
+  <ol>
+    <li>Claude 输出 Markdown 内容后，<strong>把内容全部复制</strong></li>
+    <li>用 VS Code（或其他编辑器）新建一个文件</li>
+    <li>粘贴，保存为 <code>xxx.md</code></li>
+    <li>按 <code>Command + Shift + V</code>（VS Code）或按空格键（Finder）查看效果</li>
+  </ol>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：如果你想让 Claude 把 Markdown 直接转成 HTML，可以说：<strong>"请把上面的 Markdown 内容输出为单个 HTML 文件，内嵌所有 CSS 和 JS"</strong>，然后双击打开就能在浏览器里看到漂亮排版了！
+  </div>
+
+  <!-- ==================== Section 6 ==================== -->
+  <h2 id="section6">六、输出 LaTeX 文档（课程作业必备）</h2>
+
+  <blockquote>
+    <p>很多理工科课程要求交排版精美的作业，LaTeX 就是为此而生的。别怕，你不需要学 LaTeX 语法——Claude 帮你写，你只需要编译。</p>
+  </blockquote>
+
+  <h3>6.1 什么是 <code>.tex</code> 文件？</h3>
+  <p><code>.tex</code> 是 LaTeX 的源文件，里面包含了你的<strong>内容和排版指令</strong>。把它"编译"一下就变成漂亮的 PDF。</p>
+
+  <h3>6.2 让 Claude 写 LaTeX</h3>
+  <p>告诉 Claude：</p>
+  <pre><code>请帮我生成一份 LaTeX 文档（.tex 文件），内容是关于 xxx 的课程作业。
+要求：支持中文（使用 ctex），有标题、作者、目录、章节，数学公式正确排版。</code></pre>
+  <p>Claude 会输出一个完整的 <code>.tex</code> 文件代码片段。</p>
+
+  <h3>6.3 如何编译 → 使用 texpage.com</h3>
+  <p>因为你的电脑可能没装 LaTeX 编译器（那个东西好几 GB），推荐用在线网站 <strong><a href="https://texpage.com" target="_blank" rel="noopener">texpage.com</a></strong>：</p>
+
+  <h4>编译步骤：</h4>
+  <pre><code>第 1 步：打开浏览器，访问 https://texpage.com
+第 2 步：点击右上角的「新建项目」(New Project)
+第 3 步：给项目起个名字，比如「课程作业」
+第 4 步：把 Claude 生成的 .tex 代码全部复制粘贴进去
+第 5 步：点击顶部的「编译」(Compile / ▶ 按钮)
+第 6 步：编译成功后，点击「下载 PDF」</code></pre>
+
+  <blockquote>
+    <p>📸 整个过程就像把文字复制到 Word 然后点"导出 PDF"一样简单！</p>
+  </blockquote>
+
+  <h3>6.4 完整的提示词模板</h3>
+  <pre><code>请帮我生成一份完整的 LaTeX 文档（.tex 文件），要求如下：
+- 文档类型：article（带标题、作者、摘要、章节）
+- 中文支持：使用 \usepackage[UTF8]{ctex}
+- 内容：关于 [你的作业主题]
+- 包含至少一个数学公式
+- 包含一个表格
+- 代码格式整洁，有适当的注释
+
+请在代码开头的注释中写明：
+% 将此文件内容复制到 https://texpage.com 即可在线编译</code></pre>
+
+  <div class="callout success">
+    <strong>✅ 小测试</strong><br><br>
+    用上面的模板让 Claude 生成一份 LaTeX，然后去 texpage.com 编译，看看能不能成功导出 PDF！
+  </div>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：如果编译报错，<strong>把错误信息复制给 Claude</strong>，它能帮你修。就像这样：<code>@编译报错.txt 这个 LaTeX 编译时报了这些错误，请帮我修复</code>。
+  </div>
+
+  <!-- ==================== Section 7 ==================== -->
+  <h2 id="section7">七、输出交互式 HTML 演示文档</h2>
+
+  <p>课程展示、答辩汇报、数据报告……很多时候你需要一个<strong>好看又能在浏览器打开</strong>的东西。</p>
+
+  <h3>7.1 魔法咒语 🎩</h3>
+  <p>告诉 Claude 这句话，效果立竿见影：</p>
+  <blockquote>
+    <p><strong>"请输出单个 HTML 文件，内嵌所有 CSS 和 JS 代码，无任何外部依赖"</strong></p>
+  </blockquote>
+
+  <h3>7.2 为什么这样要求？</h3>
+  <table>
+    <tr><th>要求</th><th>原因</th></tr>
+    <tr><td><strong>单个 HTML 文件</strong></td><td>不用带一堆文件夹，一个文件搞定</td></tr>
+    <tr><td><strong>内嵌 CSS</strong></td><td>不需要 <code>.css</code> 文件，样式直接写在 HTML 里</td></tr>
+    <tr><td><strong>内嵌 JS</strong></td><td>不需要 <code>.js</code> 文件，交互逻辑直接写在 HTML 里</td></tr>
+    <tr><td><strong>无外部依赖</strong></td><td>不需要联网加载任何东西，断网也能用</td></tr>
+  </table>
+
+  <h3>7.3 完整模板</h3>
+  <pre><code>请帮我生成一个交互式演示网页，要求：
+- 输出单个 HTML 文件，内嵌所有 CSS 和 JS 代码，无任何外部依赖
+- 主题：关于 [你的题目]
+- 风格：现代、简洁、适合课堂展示
+- 内容包含：标题页、3-4 个内容页、总结页
+- 支持键盘翻页（左右箭头）
+- 有适当的动画过渡效果</code></pre>
+
+  <h3>7.4 如何使用</h3>
+  <p>Claude 会给你一长串代码 → 你把它<strong>全部复制</strong> → 粘贴到一个文本编辑器（Mac 自带的「文本编辑」就行）→ <strong>保存为 <code>.html</code> 文件</strong>（比如 <code>演示.html</code>）→ 双击打开！</p>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：保存时，文本编辑默认是 <code>.rtf</code> 格式。你需要：<strong>「格式」→「制作纯文本」</strong>，然后再保存，后缀改成 <code>.html</code>。或者更简单的——在 Terminal 里用 <code>touch 演示.html</code> 创建一个空文件，然后用 VS Code 打开编辑。
+  </div>
+
+  <h3>7.5 进阶：让你的网页更好看</h3>
+  <p>你可以追加要求：</p>
+  <ul>
+    <li>"请使用渐变背景色"</li>
+    <li>"添加一个黑夜/白天模式切换按钮"</li>
+    <li>"数据可视化部分使用 Chart.js"（Claude 会把 Chart.js 也内嵌进去）</li>
+  </ul>
+
+  <!-- ==================== Section 8 ==================== -->
+  <h2 id="section8">八、用 Python 绘制数据图</h2>
+
+  <p>课程实验、数据分析报告……一张好图胜过千言万语。让 Claude 帮你写 Python 来画！</p>
+
+  <h3>8.1 基础用法</h3>
+  <pre><code>请写一个 Python 脚本，使用 matplotlib 绘制 [描述你想要的图]。
+数据如下：[粘贴数据]
+要求：保存为 PNG 图片，分辨率为 300 DPI。</code></pre>
+
+  <h3>8.2 完整示例</h3>
+  <p>假设你要画一个简单的折线图：</p>
+  <pre><code>请写一个 Python 脚本，用 matplotlib 画一个折线图。
+X 轴是月份（1月到12月），Y 轴是温度（摄氏度）：
+[5, 8, 15, 20, 25, 30, 33, 32, 28, 22, 14, 8]
+要求：
+- 标题：「2025年各月平均温度」
+- 保存为 temperature.png
+- 如果没有安装 matplotlib，请先帮我 pip install</code></pre>
+
+  <h3>8.3 如何运行 Python 脚本</h3>
+  <p>Claude 输出代码后，你需要：</p>
+  <pre><code>第 1 步：把代码保存为一个 .py 文件
+        （比如 plot.py）
+
+第 2 步：在 Terminal 中，cd 到文件所在目录
+
+第 3 步：运行：
+        python3 plot.py
+
+第 4 步：打开生成的图片文件查看</code></pre>
+
+  <div class="callout warn">
+    <strong>⚠️</strong> 如果你的 Mac 提示 <code>python3: command not found</code>，说明没装 Python。最简单的安装方法：去 <a href="https://python.org" target="_blank" rel="noopener">python.org</a> 下载安装包，一路点"继续"即可。
+  </div>
+
+  <h3>8.4 常用画图类型速查</h3>
+  <table>
+    <tr><th>图表类型</th><th>对 Claude 说什么</th></tr>
+    <tr><td>折线图</td><td>"画一个折线图 / line chart"</td></tr>
+    <tr><td>柱状图</td><td>"画一个柱状图 / bar chart"</td></tr>
+    <tr><td>饼图</td><td>"画一个饼图 / pie chart"</td></tr>
+    <tr><td>散点图</td><td>"画一个散点图 / scatter plot"</td></tr>
+    <tr><td>直方图</td><td>"画一个直方图 / histogram"</td></tr>
+    <tr><td>热力图</td><td>"画一个热力图 / heatmap"</td></tr>
+    <tr><td>多子图</td><td>"一行两列排列两个子图"</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <strong>💡 小贴士</strong>：如果 Claude 写的代码跑不起来，把<strong>完整的报错信息</strong>复制给它："这段代码报错了：<code>[粘贴错误]</code>，请修复"。
+  </div>
+
+  <!-- ==================== Section 9 ==================== -->
+  <h2 id="section9">九、为什么 Claude 老问我问题？——Plan Mode 说明</h2>
+
+  <h3>9.1 第一次见到它，你可能懵了</h3>
+  <p>用着用着，你可能会看到上方显示 <strong><code>"1 plan mode"</code></strong>，然后界面弹出选项让你选。比如：</p>
+  <pre><code>┌─────────────────────────────────────────────────┐
+│  Claude wants to:                                │
+│  创建 3 个文件，修改 2 个文件                      │
+│                                                  │
+│  [Accept]  [Reject]  [Modify]                    │
+└─────────────────────────────────────────────────┘</code></pre>
+  <p>你心里可能在想：<strong>"我就让你写个作业，怎么还让我做选择？？"</strong></p>
+  <p>别急，这是好事。</p>
+
+  <h3>9.2 Plan Mode 是什么？</h3>
+  <p>Plan Mode 是 Claude 的 <strong>「先想好再动手」</strong> 模式。数字（比如 N = 1、2、3…）表示这是第几个计划。</p>
+  <p>它就像一个<strong>严谨的施工队</strong>——在砸墙之前，先给你看图纸：</p>
+  <blockquote>
+    <p>"老板，我打算在这面墙上开个窗，图纸是这样的。你看行不行？行的话我就动手了。"</p>
+  </blockquote>
+
+  <h3>9.3 三个选项的含义</h3>
+  <table>
+    <tr><th>按钮</th><th>含义</th><th>什么时候选</th></tr>
+    <tr><td><strong>Accept</strong>（同意）</td><td>"行，就按你说的做吧"</td><td>方案看起来合理</td></tr>
+    <tr><td><strong>Reject</strong>（拒绝）</td><td>"不行，方向不对"</td><td>完全不是你想要的</td></tr>
+    <tr><td><strong>Modify</strong>（修改方案）</td><td>"方向差不多，但需要改改"</td><td>大体 ok，细节要调</td></tr>
+  </table>
+
+  <h3>9.4 为什么这是好事？</h3>
+  <p>🎯 <strong>保护你的文件</strong>：Claude 不会乱来——它先告诉你它打算做什么，你确认了它才动手。不会出现"我让它改第3章，它把整篇论文重写了"的惨剧。</p>
+  <p>🎯 <strong>帮你把关</strong>：有时候你可能随口说了个模糊的需求，Plan Mode 让 Claude 先"翻译"一遍给你看，你可以及时纠正。</p>
+
+  <h3>9.5 如果你不想每次都选...</h3>
+  <p>如果你信任 Claude，可以直接在输入框里加上：</p>
+  <blockquote>
+    <p><strong>"Please proceed"</strong> 或 <strong>"请直接执行"</strong></p>
+  </blockquote>
+  <p>Claude 就会跳过 Plan Mode，直接开干。</p>
+  <p>同理，如果你想<strong>进入</strong> Plan Mode：</p>
+  <blockquote>
+    <p><strong>"先给我一个计划，我确认后再执行"</strong></p>
+  </blockquote>
+
+  <div class="callout tip">
+    <strong>💡 建议</strong>：遇到<strong>重要任务</strong>（改论文、改代码、删文件）时，让 Claude 先在 Plan Mode 里列出方案给你看，确认无误再执行。遇到<strong>简单任务</strong>（问个问题、查个资料），直接说 "请直接执行" 省时间。
+  </div>
+
+  <!-- ==================== Section 10 ==================== -->
+  <h2 id="section10">十、总结与常用提示词模板</h2>
+
+  <h3>10.1 你学会了什么</h3>
+  <table>
+    <tr><th>技能</th><th>一句话回顾</th></tr>
+    <tr><td>打开 Terminal</td><td><code>Command + 空格</code> → 输入 <code>terminal</code></td></tr>
+    <tr><td>基础命令</td><td><code>ls</code> / <code>cd</code> / <code>mkdir</code> / <code>cp</code> / <code>mv</code> / <code>rm</code></td></tr>
+    <tr><td>文件路径</td><td>Finder 看中文，Terminal 用英文（Desktop, Downloads...）</td></tr>
+    <tr><td>项目文件夹</td><td>一个课程一个文件夹，<code>cd</code> 进去再启动 <code>claude</code></td></tr>
+    <tr><td>启动 Claude</td><td>Terminal 里输入 <code>claude</code></td></tr>
+    <tr><td>退出 Claude</td><td><code>Ctrl + C</code> 两次 或 <code>/exit</code></td></tr>
+    <tr><td>继续对话</td><td><code>/resume</code> 恢复历史对话</td></tr>
+    <tr><td>ESC 后悔药</td><td>按一次中断，按多次回退到之前的对话</td></tr>
+    <tr><td>快捷键</td><td><code>Alt+Enter</code> 换行、<code>Alt+V</code> 贴图、<code>Cmd+C/V</code> 复制粘贴、<code>Ctrl+U</code> 清空行</td></tr>
+    <tr><td>让 AI 读文件</td><td>空格 + <code>@</code> + 选择文件</td></tr>
+    <tr><td>找工具</td><td>"请搜索/安装相关 skills 或 GitHub 仓库"</td></tr>
+    <tr><td>装 GitHub 仓库</td><td>给 Claude 仓库地址，它会自己 clone 和配置</td></tr>
+    <tr><td>装 Skills</td><td>给 Claude skills 仓库地址，扩展它的能力</td></tr>
+    <tr><td>遇到问题</td><td>直接告诉 Claude，不需要自己会写代码</td></tr>
+    <tr><td>查看 .md 文件</td><td>VS Code (<code>Cmd+Shift+V</code>) / 空格键快速查看 / Typora</td></tr>
+    <tr><td>LaTeX 作业</td><td>Claude 写 <code>.tex</code> → texpage.com 编译 → 下载 PDF</td></tr>
+    <tr><td>HTML 演示</td><td>"输出单个 HTML 文件，内嵌所有 CSS 和 JS"</td></tr>
+    <tr><td>Python 画图</td><td>Claude 写 <code>.py</code> → Terminal <code>python3</code> 运行</td></tr>
+    <tr><td>Plan Mode</td><td>先看方案再执行 = 安全 + 可控</td></tr>
+  </table>
+
+  <h3>10.2 常用提示词模板（直接复制改）</h3>
+
+  <h4>📝 作业写作</h4>
+  <pre><code>请帮我写一份关于 [主题] 的课程作业，要求：
+- 字数约 [XXX] 字
+- 包含摘要、引言、正文（3个部分）、结论
+- 引用 [X] 篇参考文献
+- 输出为 LaTeX 格式（.tex 文件），支持中文</code></pre>
+
+  <h4>📊 数据分析</h4>
+  <pre><code>请帮我分析这份数据 [@数据文件.csv]，要求：
+- 先用 Python 做数据清洗
+- 找出关键趋势
+- 画 3 张相关的图表
+- 写一段分析结论
+如果缺少工具请自动搜索安装</code></pre>
+
+  <h4>🐛 代码调试</h4>
+  <pre><code>这段代码 [@代码文件] 运行时报错了，报错信息是：
+[粘贴错误信息]
+请帮我找出问题并修复</code></pre>
+
+  <h4>🎨 报告生成</h4>
+  <pre><code>请基于 [@实验数据] 生成一份完整的实验报告，要求：
+- LaTeX 格式，支持中文
+- 包含实验目的、方法、结果、讨论
+- 数据图表用 Python matplotlib 绘制，代码也请一起提供
+- 图表图片嵌入 LaTeX 文档中</code></pre>
+
+  <h4>🌐 演示文档</h4>
+  <pre><code>请帮我生成一个课堂演示文档，要求：
+- 输出单个 HTML 文件，内嵌所有 CSS 和 JS 代码，无任何外部依赖
+- 主题：[你的题目]
+- 共 8-10 页，支持键盘翻页
+- 风格：简洁现代，适合投影展示
+- 如果有公式，用 MathJax（内嵌）</code></pre>
+
+  <hr>
+
+  <h3>🎓 最后一句话</h3>
+  <p>Claude Code 就像一个<strong>耐心到永远不会烦的助教</strong>——你可以问它任何问题、让它帮你做任何事、甚至可以对着它自言自语理清思路。</p>
+  <p>一开始可能会有点懵（命令行、Plan Mode、各种选项……），但用上几次你就会发现：<strong>原来写作业可以这么轻松！</strong></p>
+
+  <blockquote>
+    <p>💬 <strong>别忘了最重要的原则</strong>：<strong>说清楚你要什么，剩下的让 Claude 想办法。</strong> 工具不够让它自己装，知识不够让它自己查，你只需要当那个"出题的人"。</p>
+  </blockquote>
+
+  <p>Happy Coding! 🎉</p>
+
+  <hr>
+
+  <p><small><em>本文档由 Claude Code 生成 · 2026年6月</em></small></p>
+
+</main>
+
+<!-- Back to Top Button -->
+<button id="back-to-top" title="回到顶部" aria-label="回到顶部">↑</button>
+
+<script>
+(function() {
+  // ========== DOM Elements ==========
+  const sidebar = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const menuBtn = document.getElementById('menu-btn');
+  const themeBtn = document.getElementById('theme-btn');
+  const backToTop = document.getElementById('back-to-top');
+  const progressBar = document.getElementById('progress-bar');
+  const navLinks = document.querySelectorAll('#sidebar nav a');
+
+  // ========== Theme Toggle ==========
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const savedTheme = localStorage.getItem('claude-guide-theme');
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.body.classList.add('dark');
+    themeBtn.textContent = '☀️';
+  }
+
+  themeBtn.addEventListener('click', function() {
+    const isDark = document.body.classList.toggle('dark');
+    themeBtn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('claude-guide-theme', isDark ? 'dark' : 'light');
+  });
+
+  // ========== Sidebar Toggle (Mobile) ==========
+  menuBtn.addEventListener('click', function() {
+    sidebar.classList.toggle('open');
+    main.classList.toggle('expanded');
+  });
+
+  // Close sidebar when clicking a link on mobile
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 900) {
+        sidebar.classList.remove('open');
+        main.classList.add('expanded');
+      }
+    });
+  });
+
+  // ========== Active Nav Link on Scroll ==========
+  const sectionIds = [];
+  navLinks.forEach(function(link) {
+    sectionIds.push(link.getAttribute('href').substring(1));
+  });
+
+  function updateActiveLink() {
+    let current = '';
+    const scrollY = window.scrollY + 120;
+    for (let i = 0; i < sectionIds.length; i++) {
+      const el = document.getElementById(sectionIds[i]);
+      if (el && el.offsetTop <= scrollY) {
+        current = sectionIds[i];
+      }
+    }
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // ========== Progress Bar ==========
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = Math.min(progress, 100) + '%';
+  }
+
+  // ========== Back to Top ==========
+  function updateBackToTop() {
+    if (window.scrollY > 500) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }
+
+  backToTop.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ========== Scroll Handler ==========
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateActiveLink();
+        updateProgress();
+        updateBackToTop();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // ========== Copy Code Buttons ==========
+  document.querySelectorAll('pre').forEach(function(pre) {
+    // Skip adding button to ASCII art blocks (like the Claude Code UI mockup)
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const text = code.innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function() {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+  // ========== Keyboard Shortcuts ==========
+  document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + Shift + T: toggle theme
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'T') {
+      e.preventDefault();
+      themeBtn.click();
+    }
+    // t: back to top
+    if (e.key === 't' && !e.target.closest('input, textarea, [contenteditable]') && !e.metaKey && !e.ctrlKey) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // ========== Initial State ==========
+  updateActiveLink();
+  updateProgress();
+  updateBackToTop();
+
+  console.log('🚀 Claude Code 新手入门指南 已就绪');
+  console.log('💡 快捷键: Cmd/Ctrl+Shift+T 切换主题 | 按 T 回到顶部');
+})();
+</script>
+
+</body>
+</html>
