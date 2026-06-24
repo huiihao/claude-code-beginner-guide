@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/ Claude-Code-%23D97706?logo=anthropic&logoColor=white" alt="Claude Code">
-  <img src="https://img.shields.io/badge/ Platform-macOS-blue?logo=apple" alt="Platform">
+  <img src="https://img.shields.io/badge/ Platform-macOS_|_Windows-blue?logo=windows" alt="Platform">
   <img src="https://img.shields.io/badge/ License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/ Lang-中_｜_EN-brightgreen" alt="Languages">
 </p>

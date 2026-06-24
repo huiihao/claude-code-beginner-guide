@@ -41,6 +41,20 @@ Boom! A window with black background and white text (or maybe white background a
 
 > 💡 **Tip**: If the default font is too small, press `Command + +` to zoom in, `Command + -` to zoom out.
 
+#### 🪟 For Windows Users — How to Open the Terminal
+
+On Windows, there are several ways:
+
+| Method | How | Recommendation |
+|--------|-----|---------------|
+| **Search** | Press `Win key`, type **`powershell`** or **`terminal`**, press Enter | ⭐⭐⭐ Best |
+| **Run dialog** | Press `Win + R`, type **`cmd`**, press Enter | ⭐⭐ Traditional |
+| **Right-click Start** | Right-click the Start button → choose "Windows PowerShell" or "Terminal" | ⭐⭐ |
+
+> 🪟 **We recommend PowerShell or Windows Terminal** — don't use the old CMD (Command Prompt). PowerShell supports modern commands that are almost identical to the Mac commands taught in this guide.
+
+> 🪟 **Another great option: Git Bash**. When you install Git for Windows, it comes with a Git Bash terminal that fully supports all Mac/Linux-style commands (`ls`, `cd`, `mkdir`, etc.) with zero additional learning.
+
 ### 1.3 The 6 Commands You Must Know
 
 These commands are just like dragging and dropping in the "File Manager," except you use words instead of a mouse. Every command follows this pattern:
@@ -158,6 +172,23 @@ rm -rf entire-folder/         # Force delete (BE VERY CAREFUL!!)
 
 ---
 
+#### 🪟 For Windows Users: Command Cheat Sheet
+
+If you're using **PowerShell** or **Windows Terminal**, all the Mac commands above **work exactly as shown**! `ls`, `cd`, `mkdir`, `cp`, `mv`, `rm` all run fine in PowerShell.
+
+If you're using the old-school **CMD (Command Prompt)**, here's the mapping:
+
+| Function | Mac / PowerShell | CMD (Legacy) | Notes |
+|----------|-----------------|-------------|-------|
+| List files | `ls` | `dir` | PowerShell supports both |
+| Change directory | `cd` | `cd` | Exactly the same ✅ |
+| Create folder | `mkdir` | `mkdir` or `md` | Exactly the same ✅ |
+| Copy file | `cp` | `copy` | PowerShell supports both |
+| Move / Rename | `mv` | `move` | PowerShell supports both |
+| Delete file | `rm` | `del` | PowerShell supports both |
+
+> 🪟 **We strongly recommend using PowerShell or Git Bash** — learn one set of commands that works on both Mac and Windows. All subsequent command examples in this guide are based on Mac/PowerShell style.
+
 ### ✅ Quick Practice
 
 Open your Terminal and try this drill:
@@ -188,6 +219,20 @@ Your Mac's operating system may show folder names in your language in Finder, bu
 | Applications | `Applications` | `/Applications` |
 
 > 🧠 **Remember this rule**: What you see in Finder is a "display name" — the Terminal cares about the "real name" (path name). **Paths always use the English names.**
+
+#### 🪟 Paths on Windows
+
+Windows paths look different from Mac paths, but they're easy to understand:
+
+| Concept | Mac | Windows |
+|---------|-----|---------|
+| Root | `/` | `C:\` (or D:\, E:\...) |
+| Home | `~` = `/Users/your-username` | `C:\Users\your-username` |
+| Desktop | `~/Desktop` | `C:\Users\your-username\Desktop` |
+| Downloads | `~/Downloads` | `C:\Users\your-username\Downloads` |
+| Separator | `/` (forward slash) | `\` (backslash) **or** `/` (forward slash works too) |
+
+> 🪟 **Good news**: In PowerShell and Git Bash, you can keep using `/` as the separator — no need to wrestle with `\`! For example, `cd ~/Desktop` works fine in Windows PowerShell. Claude Code also uses `/` internally for all paths.
 
 #### What does `/` mean in a path?
 
@@ -846,8 +891,9 @@ Similarly, if you want to **enter** Plan Mode:
 
 | Skill | One-Line Recap |
 |-------|---------------|
-| Open Terminal | `Command + Space` → type `terminal` |
-| Basic commands | `ls` / `cd` / `mkdir` / `cp` / `mv` / `rm` |
+| Open Terminal (Mac) | `Command + Space` → type `terminal` |
+| Open Terminal (Windows) | `Win key` → type `powershell` or `terminal` |
+| Basic commands | `ls` / `cd` / `mkdir` / `cp` / `mv` / `rm` (works in PowerShell) |
 | File paths | Finder shows display names; Terminal uses English names (Desktop, Downloads...) |
 | Project folders | One folder per course, `cd` into it, then launch `claude` |
 | Launch Claude | Type `claude` in Terminal |

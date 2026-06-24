@@ -194,6 +194,17 @@
   <p>Boom! A window with black background and white text (or maybe white background and black text) pops up. Don't be intimidated — it's just waiting for you to speak.</p>
   <div class="callout tip"><strong>💡 Tip</strong>: If the default font is too small, press <code>Command + +</code> to zoom in, <code>Command + -</code> to zoom out.</div>
 
+  <h4>🪟 For Windows Users — How to Open the Terminal</h4>
+  <p>On Windows, there are several ways:</p>
+  <table>
+    <tr><th>Method</th><th>How</th><th>Recommendation</th></tr>
+    <tr><td><strong>Search</strong></td><td>Press <code>Win key</code>, type <strong><code>powershell</code></strong> or <strong><code>terminal</code></strong>, press Enter</td><td>⭐⭐⭐ Best</td></tr>
+    <tr><td><strong>Run dialog</strong></td><td>Press <code>Win + R</code>, type <strong><code>cmd</code></strong>, press Enter</td><td>⭐⭐ Traditional</td></tr>
+    <tr><td><strong>Right-click Start</strong></td><td>Right-click Start button → choose "Windows PowerShell" or "Terminal"</td><td>⭐⭐</td></tr>
+  </table>
+  <div class="callout tip"><strong>🪟 We recommend PowerShell or Windows Terminal</strong> — don't use the old CMD (Command Prompt). PowerShell supports commands almost identical to the Mac commands in this guide.</div>
+  <div class="callout tip"><strong>🪟 Another great option: Git Bash</strong>. When you install Git for Windows, you get Git Bash — it fully supports all Mac/Linux-style commands (<code>ls</code>, <code>cd</code>, <code>mkdir</code>, etc.) with zero additional learning.</div>
+
   <h3>1.3 The 6 Commands You Must Know</h3>
   <p>These commands are just like dragging and dropping in the "File Manager," except you use words instead of a mouse. Every command follows this pattern:</p>
   <pre><code>command [options] [target]</code></pre>
@@ -253,6 +264,22 @@ rm -r entire-folder/          # Delete a folder (be careful!)
 rm -rf entire-folder/         # Force delete (BE VERY CAREFUL!!)</code></pre>
   <hr>
 
+  <h4>🪟 For Windows Users: Command Cheat Sheet</h4>
+  <p>If you're using <strong>PowerShell</strong> or <strong>Windows Terminal</strong>, all the Mac commands above <strong>work exactly as shown</strong>! <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>cp</code>, <code>mv</code>, <code>rm</code> all run fine in PowerShell.</p>
+  <p>If you're using the old-school <strong>CMD (Command Prompt)</strong>, here's the mapping:</p>
+  <table>
+    <tr><th>Function</th><th>Mac / PowerShell</th><th>CMD (Legacy)</th><th>Notes</th></tr>
+    <tr><td>List files</td><td><code>ls</code></td><td><code>dir</code></td><td>PowerShell supports both</td></tr>
+    <tr><td>Change directory</td><td><code>cd</code></td><td><code>cd</code></td><td>Exactly the same ✅</td></tr>
+    <tr><td>Create folder</td><td><code>mkdir</code></td><td><code>mkdir</code> or <code>md</code></td><td>Exactly the same ✅</td></tr>
+    <tr><td>Copy file</td><td><code>cp</code></td><td><code>copy</code></td><td>PowerShell supports both</td></tr>
+    <tr><td>Move / Rename</td><td><code>mv</code></td><td><code>move</code></td><td>PowerShell supports both</td></tr>
+    <tr><td>Delete file</td><td><code>rm</code></td><td><code>del</code></td><td>PowerShell supports both</td></tr>
+  </table>
+  <div class="callout tip"><strong>🪟 We strongly recommend using PowerShell or Git Bash</strong> — learn one set of commands that works on both Mac and Windows. All subsequent command examples in this guide use Mac/PowerShell style.</div>
+
+  <hr>
+
   <div class="callout success">
     <strong>✅ Quick Practice</strong><br><br>
     Open your Terminal and try this drill:
@@ -278,6 +305,18 @@ rm -r claude-test         # Delete the test folder</code></pre>
     <tr><td>Applications</td><td><code>Applications</code></td><td><code>/Applications</code></td></tr>
   </table>
   <blockquote><p>🧠 <strong>Remember this rule</strong>: What you see in Finder is a "display name" — the Terminal cares about the "real name" (path name). <strong>Paths always use the English names.</strong></p></blockquote>
+
+  <h4>🪟 Paths on Windows</h4>
+  <p>Windows paths look different from Mac paths, but they're easy to understand:</p>
+  <table>
+    <tr><th>Concept</th><th>Mac</th><th>Windows</th></tr>
+    <tr><td>Root</td><td><code>/</code></td><td><code>C:\</code> (or D:\, E:\...)</td></tr>
+    <tr><td>Home</td><td><code>~</code> = <code>/Users/your-username</code></td><td><code>C:\Users\your-username</code></td></tr>
+    <tr><td>Desktop</td><td><code>~/Desktop</code></td><td><code>C:\Users\your-username\Desktop</code></td></tr>
+    <tr><td>Downloads</td><td><code>~/Downloads</code></td><td><code>C:\Users\your-username\Downloads</code></td></tr>
+    <tr><td>Separator</td><td><code>/</code> (forward slash)</td><td><code>\</code> (backslash) <strong>or</strong> <code>/</code> (forward slash works too)</td></tr>
+  </table>
+  <div class="callout tip"><strong>🪟 Good news</strong>: In PowerShell and Git Bash, you can keep using <code>/</code> as the separator — no need to wrestle with <code>\</code>! For example, <code>cd ~/Desktop</code> works fine in Windows PowerShell. Claude Code also uses <code>/</code> internally for all paths.</div>
 
   <h4>What does <code>/</code> mean in a path?</h4>
   <p><code>/</code> is a "separator" between folders, just like <code>/</code> in a URL:</p>
@@ -701,8 +740,9 @@ Step 4: Open the generated image file to view</code></pre>
   <h3>10.1 What You've Learned</h3>
   <table>
     <tr><th>Skill</th><th>One-Line Recap</th></tr>
-    <tr><td>Open Terminal</td><td><code>Command + Space</code> → type <code>terminal</code></td></tr>
-    <tr><td>Basic commands</td><td><code>ls</code> / <code>cd</code> / <code>mkdir</code> / <code>cp</code> / <code>mv</code> / <code>rm</code></td></tr>
+    <tr><td>Open Terminal (Mac)</td><td><code>Command + Space</code> → type <code>terminal</code></td></tr>
+    <tr><td>Open Terminal (Windows)</td><td><code>Win key</code> → type <code>powershell</code> or <code>terminal</code></td></tr>
+    <tr><td>Basic commands</td><td><code>ls</code> / <code>cd</code> / <code>mkdir</code> / <code>cp</code> / <code>mv</code> / <code>rm</code> (works in PowerShell)</td></tr>
     <tr><td>File paths</td><td>Finder shows display names; Terminal uses English names</td></tr>
     <tr><td>Project folders</td><td>One folder per course, <code>cd</code> into it, then launch <code>claude</code></td></tr>
     <tr><td>Launch Claude</td><td>Type <code>claude</code> in Terminal</td></tr>
